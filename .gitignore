@@ -9,3 +9,6 @@ node_modules/
 builds/*
 !builds/.gitkeep
 *.exe
+
+# Local reference clone (Kenney tutorial demo) — assets live in assets/placeholders/kenney/
+_tmp_pixel_platformer/

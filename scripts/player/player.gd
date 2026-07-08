@@ -13,14 +13,17 @@ extends CharacterBody2D
 @export var jump_buffer_time: float = 0.11
 @export var max_air_jumps: int = 2
 @export var max_fall_speed: float = 700.0
+@export var death_restart_delay: float = 0.55
 
 var _coyote_timer: float = 0.0
 var _jump_buffer_timer: float = 0.0
 var _air_jumps_remaining: int = 0
 var _facing_direction: float = 1.0
 var _spawn_position: Vector2 = Vector2.ZERO
+var _frozen: bool = false
+var _dying: bool = false
 
-@onready var _visual: ColorRect = $Visual
+@onready var _sprite: AnimatedSprite2D = $AnimatedSprite2D
 
 
 func _ready() -> void:
@@ -30,13 +33,45 @@ func _ready() -> void:
 	_spawn_position = global_position
 
 
+func freeze() -> void:
+	_frozen = true
+	velocity = Vector2.ZERO
+	_sprite.play("idle")
+
+
+func die() -> void:
+	if _dying or _frozen:
+		return
+	_dying = true
+	velocity = Vector2.ZERO
+	_sprite.play("death")
+	_sprite.modulate = Color(1.0, 0.45, 0.45)
+	await get_tree().create_timer(death_restart_delay).timeout
+	var controller: Node = get_tree().get_first_node_in_group("level_controller")
+	if controller != null and controller.has_method("restart_level"):
+		controller.restart_level()
+	else:
+		get_tree().reload_current_scene()
+
+
 func _physics_process(delta: float) -> void:
+	if _dying:
+		velocity = Vector2.ZERO
+		move_and_slide()
+		return
+
+	if _frozen:
+		velocity = Vector2.ZERO
+		move_and_slide()
+		return
+
 	_update_timers(delta)
 	_apply_gravity(delta)
 	_apply_horizontal_movement(delta)
 	_handle_jump()
 	_limit_fall_speed()
 	_update_facing()
+	_update_animation()
 	move_and_slide()
 
 
@@ -46,6 +81,8 @@ func respawn() -> void:
 	_coyote_timer = 0.0
 	_jump_buffer_timer = 0.0
 	_air_jumps_remaining = 0
+	_dying = false
+	_sprite.modulate = Color.WHITE
 
 
 func _update_timers(delta: float) -> void:
@@ -113,4 +150,16 @@ func _update_facing() -> void:
 	if not is_zero_approx(velocity.x):
 		_facing_direction = signf(velocity.x)
 
-	_visual.scale.x = _facing_direction
+	_sprite.flip_h = _facing_direction < 0.0
+
+
+func _update_animation() -> void:
+	if not is_on_floor():
+		if velocity.y < 0.0:
+			_sprite.play("jump")
+		else:
+			_sprite.play("fall")
+	elif absf(velocity.x) > 20.0:
+		_sprite.play("run")
+	else:
+		_sprite.play("idle")

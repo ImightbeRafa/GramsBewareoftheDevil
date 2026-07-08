@@ -55,9 +55,35 @@ Full human-readable steps: [SETUP.md](SETUP.md)
 
 1. [GAME_DESIGN.md](GAME_DESIGN.md) — vision vs current scope
 2. [ARCHITECTURE.md](ARCHITECTURE.md) — folders, scenes, layers, input
-3. [COLLABORATION.md](COLLABORATION.md) — Git workflow
-4. [SETUP.md](SETUP.md) — environment requirements
-5. `.cursorrules` — GDScript conventions
+3. [GITHUB_WORKFLOW.md](GITHUB_WORKFLOW.md) — branches, PRs, **never push to master** (creative director)
+4. [COLLABORATION.md](COLLABORATION.md) — team roles
+5. [SETUP.md](SETUP.md) — environment requirements
+6. `.cursorrules` — GDScript conventions
+
+## Git & PR rules (all agents)
+
+| Rule | Who |
+|------|-----|
+| `git pull origin master` before starting new work | Everyone |
+| Work on a branch (`design/*`, `feature/*`, `fix/*`) | Everyone (required for creative director) |
+| **Never push to `master`** | Creative director's agent |
+| **Never merge Pull Requests** | Creative director's agent — lead developer merges |
+| **Never `git commit` unless user explicitly asks** | All agents |
+| Test with **F5** or Godot MCP before user commits / opens PR | All agents |
+| PR description must include **what changed** and **how to test** | Whoever opens the PR |
+| Read scope in GAME_DESIGN.md before adding features | All agents |
+
+**Lead developer (Ryan):** may commit/merge to `master` after reviewing PRs. Still test before merge.
+
+**Creative director onboarding prompt:**
+
+```
+This is GramsBewareoftheDevil. Read docs/AGENTS.md, docs/GITHUB_WORKFLOW.md, docs/GAME_DESIGN.md.
+Work only on branches (design/* or feature/*), never master.
+Test in Godot (F5 or MCP) before I commit.
+Never push to master or merge PRs — I open PRs for Ryan to review.
+Never commit unless I explicitly say "commit".
+```
 
 ## Executor / Advisor loop
 
@@ -110,6 +136,10 @@ Full human-readable steps: [SETUP.md](SETUP.md)
 | `scenes/levels/level_01.tscn` | Main / prototype level |
 | `project.godot` | Input map, main scene, layers |
 | `docs/SETUP.md` | Full onboarding for new machines |
+| `docs/GITHUB_WORKFLOW.md` | Branches, PRs, review process |
+| `docs/ASSETS.md` | Kenney placeholders, what is gitignored |
+| `docs/FOR_LEAD_DEVELOPER.md` | Ryan's guide to explain workflow to brother |
+| `assets/placeholders/kenney/` | Committed Kenney tiles + characters (partner gets via Git) |
 | `scripts/mcp/start-godot-mcp.cmd` | Portable MCP launcher (Windows) |
 
 ## Verification checklist
@@ -119,4 +149,5 @@ Full human-readable steps: [SETUP.md](SETUP.md)
 - [ ] Cursor godot-mcp green, 21 tools
 - [ ] Project runs without script errors (F5 or MCP run)
 - [ ] Movement, hazard respawn, goal feedback work
+- [ ] `assets/placeholders/kenney/tiles_packed.png` and `characters_packed.png` exist
 - [ ] Docs updated if architecture or scope changed

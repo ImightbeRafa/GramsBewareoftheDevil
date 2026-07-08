@@ -9,12 +9,14 @@ A 2D level-based platformer inspired by classic Sonic, Mario, and Mega Man — b
 **Partner onboarding prompt** (paste into Cursor after clone):
 
 ```
-I just cloned gramps-dont-dancewiththe-devil. Follow docs/SETUP.md step by step:
+I just cloned GramsBewareoftheDevil. Follow docs/SETUP.md step by step:
 1) Run npm install
-2) Walk me through Godot 4.7 setup and enabling the MCP plugin
-3) Reload Cursor and verify godot-mcp is green with 21 tools
-4) Run the game via MCP or tell me to press F5
-Then read docs/AGENTS.md and docs/GAME_DESIGN.md so you understand project scope.
+2) Verify assets/placeholders/kenney/ has tiles_packed.png and characters_packed.png (docs/ASSETS.md)
+3) Walk me through Godot 4.7 setup and enabling the MCP plugin
+4) Reload Cursor and verify godot-mcp is green with 21 tools
+5) Run the game via MCP or tell me to press F5
+Then read docs/AGENTS.md, docs/GAME_DESIGN.md, and docs/GITHUB_WORKFLOW.md.
+Do NOT clone or use _tmp_pixel_platformer — it is gitignored; art is already in assets/placeholders/kenney/.
 ```
 
 ## Current scope (Session 1 prototype)
@@ -35,8 +37,8 @@ Then read docs/AGENTS.md and docs/GAME_DESIGN.md so you understand project scope
 ## Quick start (after setup)
 
 ```powershell
-git clone <YOUR_REPO_URL>
-cd gramps-dont-dancewiththe-devil
+git clone https://github.com/ImightbeRafa/GramsBewareoftheDevil.git
+cd GramsBewareoftheDevil
 npm install
 ```
 
@@ -57,6 +59,9 @@ npm install
 | Doc | Purpose |
 |-----|---------|
 | [docs/SETUP.md](docs/SETUP.md) | **Full onboarding** — clone to ready (humans + AI) |
+| [docs/GITHUB_WORKFLOW.md](docs/GITHUB_WORKFLOW.md) | **Branches & Pull Requests** — how to collaborate on GitHub |
+| [docs/ASSETS.md](docs/ASSETS.md) | Kenney art — what partners get from Git |
+| [docs/FOR_LEAD_DEVELOPER.md](docs/FOR_LEAD_DEVELOPER.md) | Lead dev guide — review PRs, explain to partner |
 | [docs/GAME_DESIGN.md](docs/GAME_DESIGN.md) | Vision, scope, what comes later |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Folders, scenes, physics layers, input |
 | [docs/COLLABORATION.md](docs/COLLABORATION.md) | Git workflow for two collaborators |

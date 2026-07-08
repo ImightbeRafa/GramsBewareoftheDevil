@@ -1,0 +1,76 @@
+[gd_resource type="SpriteFrames" load_steps=8 format=3 uid="uid://player_sprite_frames"]
+
+[ext_resource type="Texture2D" path="res://assets/placeholders/kenney/characters_packed.png" id="1_characters"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_idle"]
+atlas = ExtResource("1_characters")
+region = Rect2(48, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_run_a"]
+atlas = ExtResource("1_characters")
+region = Rect2(72, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_run_b"]
+atlas = ExtResource("1_characters")
+region = Rect2(48, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jump"]
+atlas = ExtResource("1_characters")
+region = Rect2(72, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_death_a"]
+atlas = ExtResource("1_characters")
+region = Rect2(48, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_death_b"]
+atlas = ExtResource("1_characters")
+region = Rect2(96, 0, 24, 24)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_death_a")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_death_b")
+}],
+"loop": false,
+"name": &"death",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jump")
+}],
+"loop": true,
+"name": &"fall",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_idle")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jump")
+}],
+"loop": true,
+"name": &"jump",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_run_a")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_run_b")
+}],
+"loop": true,
+"name": &"run",
+"speed": 10.0
+}]

@@ -20,11 +20,11 @@ Complete onboarding for **both collaborators** after cloning from Git. Written f
 ## Step 1 — Clone the repository
 
 ```powershell
-git clone <YOUR_REPO_URL>
-cd gramps-dont-dancewiththe-devil
+git clone https://github.com/ImightbeRafa/GramsBewareoftheDevil.git
+cd GramsBewareoftheDevil
 ```
 
-Replace `<YOUR_REPO_URL>` with your GitHub/GitLab private repo URL (ask the main developer if you don't have it).
+> **Daily Git workflow (branches + Pull Requests):** see [GITHUB_WORKFLOW.md](GITHUB_WORKFLOW.md)
 
 ---
 
@@ -52,6 +52,21 @@ node node_modules/@satelliteoflove/godot-mcp/dist/cli.js --version
 
 ---
 
+## Step 2b — Verify placeholder art (included in Git)
+
+Kenney sprites and tiles are already in the repo — **no extra download**:
+
+```powershell
+Test-Path assets/placeholders/kenney/tiles_packed.png
+Test-Path assets/placeholders/kenney/characters_packed.png
+```
+
+Both should return `True`. Full details: [ASSETS.md](ASSETS.md).
+
+Do **not** use `_tmp_pixel_platformer/` — that folder is gitignored local reference only.
+
+---
+
 ## Step 3 — Godot editor setup
 
 1. **Open Godot 4.7-stable**
@@ -73,7 +88,7 @@ Then enable the plugin in Godot (step 5 above) and restart the editor.
 
 ### First run
 
-Press **F5** — you should see `level_01` with move/jump/double-jump controls.
+Press **F5** — Kenney tiles and character sprites load from `assets/placeholders/kenney/` (included in Git — no extra download). Godot may reimport PNGs on first open; wait for it to finish.
 
 | Action | Keys |
 |--------|------|
@@ -134,34 +149,28 @@ Expected: agent returns project name `GrampsDontDancewiththeDevil`, Godot 4.7, a
 
 ---
 
-## Step 6 — Daily collaboration workflow (Git)
+## Step 6 — Daily collaboration workflow (Git + Pull Requests)
 
-Both of you work from the **same repo**. No separate build drops required — `git pull` is the sync.
+**Never push directly to `master`** (unless you are the lead developer merging reviewed work).
+
+Full beginner guide: **[GITHUB_WORKFLOW.md](GITHUB_WORKFLOW.md)**
 
 ```powershell
-# Start of every session (both people)
-git pull
+# Start of every session
+git checkout master
+git pull origin master
 
-# After you make changes
+# New work — always use a branch
+git checkout -b design/my-change-name
+
+# ... edit, test F5 ...
+
 git add .
-git commit -m "Short description of what changed"
-git push
+git commit -m "Describe what changed"
+git push -u origin design/my-change-name
 ```
 
-### Roles
-
-| Person | Typical work |
-|--------|----------------|
-| **Technical lead** | Scripts, systems, project settings, MCP/tooling |
-| **Creative director** | Level layout, feel feedback, scene tweaks, design docs |
-
-Both can use **Godot + Cursor + MCP** once set up.
-
-### Avoid merge pain
-
-- `git pull` before starting work
-- Coordinate who edits the same `.tscn` file (scene conflicts are annoying)
-- Communicate in chat: _"I'm editing level_01"_ / _"pushed movement tweaks"_
+Then open a **Pull Request** on GitHub for Ryan to review and merge.
 
 ---
 
@@ -172,10 +181,13 @@ Both can use **Godot + Cursor + MCP** once set up.
 1. `node --version` — must be 20+
 2. `npm install` — project root
 3. Confirm files exist: `.cursor/mcp.json`, `addons/godot_mcp/plugin.cfg`, `scripts/mcp/start-godot-mcp.cmd`
-4. Tell user to open `project.godot` in Godot 4.7-stable and confirm MCP plugin enabled
-5. Tell user to reload Cursor window
-6. Call MCP `godot_project` → `get_info` and `addon_status` when Godot is open
-7. Read `docs/AGENTS.md`, `docs/GAME_DESIGN.md`, `docs/ARCHITECTURE.md` before implementing features
+4. Confirm Kenney placeholder art: `assets/placeholders/kenney/tiles_packed.png` and `characters_packed.png` (see [ASSETS.md](ASSETS.md))
+5. Tell user to open `project.godot` in Godot 4.7-stable and confirm MCP plugin enabled
+6. Tell user to open this folder in Cursor and **reload window**
+7. Call MCP `godot_project` → `get_info` and `addon_status` when Godot is open
+8. Read `docs/AGENTS.md`, `docs/GAME_DESIGN.md`, `docs/ARCHITECTURE.md`, `docs/ASSETS.md` before implementing features
+
+**Do not** clone or add `_tmp_pixel_platformer/` — it is gitignored local reference only. Game art is in `assets/placeholders/kenney/`.
 
 **Do not** hardcode machine-specific paths in `.cursor/mcp.json`.
 
@@ -188,12 +200,14 @@ Both can use **Godot + Cursor + MCP** once set up.
 Give this to your partner the first time they open the project in Cursor:
 
 ```
-I just cloned gramps-dont-dancewiththe-devil. Follow docs/SETUP.md step by step:
+I just cloned GramsBewareoftheDevil. Follow docs/SETUP.md step by step:
 1) Run npm install
-2) Walk me through Godot 4.7 setup and enabling the MCP plugin
-3) Reload Cursor and verify godot-mcp is green with 21 tools
-4) Run the game via MCP or tell me to press F5
-Then read docs/AGENTS.md and docs/GAME_DESIGN.md so you understand project scope.
+2) Verify assets/placeholders/kenney/ has tiles_packed.png and characters_packed.png (docs/ASSETS.md)
+3) Walk me through Godot 4.7 setup and enabling the MCP plugin
+4) Reload Cursor and verify godot-mcp is green with 21 tools
+5) Run the game via MCP or tell me to press F5
+Then read docs/AGENTS.md, docs/GAME_DESIGN.md, and docs/GITHUB_WORKFLOW.md.
+Do NOT clone or use _tmp_pixel_platformer — it is gitignored; art is already in assets/placeholders/kenney/.
 ```
 
 ---
@@ -215,6 +229,10 @@ You opened with the wrong Godot version. Install **4.7-stable** and reopen.
 ### MCP works but tools fail after editing project.godot
 
 Restart Godot editor (or MCP `godot_editor_edit` restart) so input map / autoloads reload.
+
+### Sprites or tiles missing (pink squares)
+
+Placeholder art is in `assets/placeholders/kenney/`. See [ASSETS.md](ASSETS.md). Do **not** clone `_tmp_pixel_platformer` — that folder is gitignored.
 
 ### Addon/server version mismatch
 

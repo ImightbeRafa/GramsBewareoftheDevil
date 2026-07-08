@@ -1,125 +1,71 @@
 # Collaboration Guide
 
-Two-person team sharing **one Git repo** — both use Godot, Cursor, and Godot MCP once set up.
+Two-person team on one GitHub repo: **https://github.com/ImightbeRafa/GramsBewareoftheDevil**
 
-> **First time on a new machine?** Follow [SETUP.md](SETUP.md) end-to-end before collaborating.
+> **First clone?** [SETUP.md](SETUP.md)  
+> **Git branches & Pull Requests?** [GITHUB_WORKFLOW.md](GITHUB_WORKFLOW.md)  
+> **Ryan's review guide?** [FOR_LEAD_DEVELOPER.md](FOR_LEAD_DEVELOPER.md)
 
 ## Roles
 
-| Role | Typical tasks |
-|------|----------------|
-| **Technical lead** (Ryan) | Scripts, systems, tooling, merges, architecture |
-| **Creative director** (partner) | Level feel, layout ideas, scene tweaks, design feedback, playtesting |
+| Role | Person | Git responsibility |
+|------|--------|-------------------|
+| **Lead developer** | Ryan | Reviews PRs, merges into `master`, owns technical direction |
+| **Creative director** | Brother | Branches, PRs for review — **does not merge to `master`** |
 
-Both can push to Git and use Cursor agents — coordinate to avoid editing the same scene at once.
+## Daily workflow (summary)
 
-## Daily workflow (Git-first)
-
-```powershell
-# Every session — both people, first thing
-git pull
-
-# Work in Godot and/or Cursor...
-
-# When ready to share
-git add .
-git commit -m "Describe what changed"
-git push
+```
+pull master → new branch → work → test F5 → commit → push branch → open PR → Ryan reviews → merge → pull master
 ```
 
-Announce in chat when you push something worth playtesting:
-
-> _"Pushed: double jump + taller platforms on level_01 — pull and F5"_
-
-### Partner's first clone
-
-```powershell
-git clone <YOUR_REPO_URL>
-cd gramps-dont-dancewiththe-devil
-```
-
-Then follow **[SETUP.md](SETUP.md)** (npm install, Godot, Cursor MCP). Paste the **Partner onboarding prompt** from SETUP.md into Cursor if you want the agent to walk you through it.
+See [GITHUB_WORKFLOW.md](GITHUB_WORKFLOW.md) for full commands.
 
 ## Playtesting
 
-### With Godot (primary — both of you)
+| Method | When |
+|--------|------|
+| **F5 in Godot** | Every session after `git pull` |
+| **Cursor + MCP** | When Godot is open and MCP is green |
+| **Exported `.exe`** | Optional — for people without Godot |
 
-1. `git pull`
-2. Open `project.godot` in Godot **4.7-stable**
-3. Press **F5**
-
-### With Cursor agent
-
-1. `git pull`
-2. Open project folder in Cursor
-3. Godot must be **open** with MCP plugin enabled
-4. Ask agent to run/playtest via MCP tools
-
-### Optional: Windows `.exe` export
-
-For someone **without** Godot installed (friends, family, future playtesters):
-
-1. **Project → Export → Windows Desktop** (Embed PCK on)
-2. Export to `builds/Gramps_latest.exe`
-3. Share the file (Discord, drive, etc.)
-
-Not required for day-to-day work between the two of you — Git is enough.
-
-## Rules to avoid pain
+## Rules
 
 | Rule | Why |
 |------|-----|
-| Run `git pull` before starting | Don't work on stale files |
-| Never commit `.godot/`, `node_modules/`, `builds/*.exe` | Machine-specific / large |
-| One person edits a given `.tscn` at a time | Scene merge conflicts are painful |
-| Same Godot **4.7-stable** on both PCs | Version mismatch breaks the project |
-| Keep Godot open when using Cursor MCP | Agent needs the editor bridge |
-| Don't duplicate godot-mcp in global Cursor MCP config | Causes connection conflicts |
+| Brother: **branch + PR only** | Ryan approves before `master` changes |
+| `git pull` on `master` before new branch | Start from latest |
+| Test before PR | No broken builds in review |
+| One person per scene file at a time | Avoid `.tscn` conflicts |
+| Godot **4.7-stable** on both PCs | Version match |
+| Godot open for Cursor MCP | Agent needs editor bridge |
 
 ## What to commit
 
-| Commit | Don't commit |
-|--------|----------------|
+| ✅ Commit | ❌ Don't commit |
+|-----------|----------------|
 | `.gd`, `.tscn`, `.md`, `project.godot` | `.godot/` |
-| `addons/godot_mcp/` | `node_modules/` |
-| `.cursor/mcp.json`, `.cursorrules` | `builds/*.exe` |
-| `package.json`, `package-lock.json` | Secrets / API keys |
-| `scripts/mcp/` | |
-
-## Branching (simple)
-
-- `main` — always playable
-- `feature/short-description` — optional for bigger experiments
-- Merge or push to `main` when ready for partner to pull
-
-No complex GitFlow needed.
+| `addons/godot_mcp/`, `scripts/mcp/` | `node_modules/` |
+| `.cursor/mcp.json`, `package-lock.json` | `builds/*.exe` |
 
 ## Feedback template
 
-Copy-paste when reporting after playtesting:
-
 ```
-Commit / date: (e.g. abc1234 or "today's pull")
-Feel: (too floaty / jump too high / love the double jump / etc.)
-Bug: (what happened, steps to reproduce)
-Fun: (what was enjoyable, what felt boring)
-Ideas: (level layout, mechanics — no need to implement now)
+PR / branch: design/level-tweaks
+Feel: (jump too high, love the platforms, etc.)
+Bug: (steps to reproduce)
+Ideas: (optional)
 ```
 
-## Repo URL
+## AI agents (both machines)
 
-Paste your remote here once created:
+Each Cursor agent must read [AGENTS.md](AGENTS.md) and [GITHUB_WORKFLOW.md](GITHUB_WORKFLOW.md).
+
+**Brother's agent:** never push to `master`, never merge PRs, never commit without explicit user request, always test before PR.
+
+## Repo
 
 ```
-Git remote: <YOUR_REPO_URL>
+https://github.com/ImightbeRafa/GramsBewareoftheDevil
+Default branch: master
 ```
-
-## AI agents on both machines
-
-Each person's Cursor agent should read:
-
-1. [SETUP.md](SETUP.md) — environment bootstrap
-2. [AGENTS.md](AGENTS.md) — how to work on this project
-3. [GAME_DESIGN.md](GAME_DESIGN.md) — scope boundaries
-
-Same rules, same MCP setup, same repo — full collaboration.
