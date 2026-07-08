@@ -1,0 +1,11 @@
+# Godot 4+ specific ignores
+.godot/
+/android/
+
+# Node (godot-mcp local install for Cursor)
+node_modules/
+
+# Exported playtest builds
+builds/*
+!builds/.gitkeep
+*.exe

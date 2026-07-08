@@ -1,0 +1,17 @@
+{
+  "name": "gramps-dont-dancewiththe-devil",
+  "version": "1.0.0",
+  "description": "Gramps Don't Dance with the Devil — Godot 4.7 2D platformer",
+  "scripts": {
+    "mcp": "node ./node_modules/@satelliteoflove/godot-mcp/dist/cli.js",
+    "setup": "npm install",
+    "mcp:install-addon": "npx -y @satelliteoflove/godot-mcp --install-addon ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@satelliteoflove/godot-mcp": "^4.1.0"
+  }
+}
