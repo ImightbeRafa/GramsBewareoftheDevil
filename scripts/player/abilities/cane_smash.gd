@@ -4,7 +4,7 @@ extends Node
 @export var charge_time: float = 0.35
 @export var hitbox_duration: float = 0.15
 @export var smash_knockback: float = 350.0
-@export var smash_range: float = 28.0
+@export var smash_range: float = 42.0
 
 var _player: Player
 var _hitbox: Area2D
@@ -72,7 +72,7 @@ func process(delta: float) -> void:
 
 func _fire_smash() -> void:
 	var direction := get_aim_direction()
-	_hitbox.position = direction * smash_range + Vector2(0.0, -6.0)
+	_hitbox.position = direction * smash_range + Vector2(0.0, -9.0)
 	_hitbox.monitoring = true
 	_hitbox_timer = hitbox_duration
 	if _visual != null:

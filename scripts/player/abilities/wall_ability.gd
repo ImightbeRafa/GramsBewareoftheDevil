@@ -3,9 +3,9 @@ extends Node
 
 @export var wall_slide_speed: float = 78.0
 @export var wall_slide_accel: float = 520.0
-@export var wall_jump_push: float = 340.0
-@export var wall_jump_vertical: float = -450.0
-@export var climb_speed: float = 170.0
+@export var wall_jump_push: float = 460.0
+@export var wall_jump_vertical: float = -555.0
+@export var climb_speed: float = 230.0
 @export var climb_accel: float = 900.0
 @export var wall_stick_speed: float = 35.0
 @export var wall_stick_accel: float = 480.0

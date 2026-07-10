@@ -38,9 +38,9 @@ func _bootstrap_level() -> void:
 	_player.configure_level_camera(bounds.position.x, bounds.position.y, bounds.end.x, bounds.end.y)
 	_player.unlocks = ALL_UNLOCKED
 	_player.max_air_jumps = 1
-	_player.speed = 200.0
-	_player.acceleration = 900.0
-	_player.friction = 1000.0
+	_player.speed = 300.0
+	_player.acceleration = 1350.0
+	_player.friction = 1500.0
 	_player.air_acceleration_multiplier = 0.7
 
 	if _kill_plane != null:

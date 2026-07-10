@@ -3,10 +3,10 @@ extends Node
 
 @export var pogo_bounce_velocity: float = -460.0
 @export var pogo_iframe_time: float = 0.15
-@export var pogo_ray_length: float = 68.0
+@export var pogo_ray_length: float = 102.0
 @export var pogo_aim_min_down: float = 0.28
 @export var pogo_horizontal_carry: float = 110.0
-@export var pogo_tip_offset: float = 22.0
+@export var pogo_tip_offset: float = 33.0
 
 var _player: Player
 var _cane_tip: Area2D
@@ -88,7 +88,7 @@ func _get_pogo_aim() -> Vector2:
 func _try_raycast_pogo() -> bool:
 	var space := _player.get_world_2d().direct_space_state
 	var aim := _get_pogo_aim()
-	var from := _player.global_position + Vector2(0.0, 4.0)
+	var from := _player.global_position + Vector2(0.0, 6.0)
 	var to := from + aim * pogo_ray_length
 	var query := PhysicsRayQueryParameters2D.create(from, to)
 	query.collision_mask = 29

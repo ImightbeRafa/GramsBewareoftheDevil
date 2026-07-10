@@ -73,4 +73,23 @@ animations = [{
 "loop": true,
 "name": &"run",
 "speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_idle")
+}],
+"loop": true,
+"name": &"crouch",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_run_a")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_run_b")
+}],
+"loop": true,
+"name": &"crouch_slide",
+"speed": 14.0
 }]
