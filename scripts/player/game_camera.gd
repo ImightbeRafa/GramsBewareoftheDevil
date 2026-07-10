@@ -1,17 +1,10 @@
 class_name GameCamera
 extends Camera2D
 
-## Global player camera — mouse edge look-ahead, movement peek, landing dip.
+## Global player camera — movement peek, landing dip.
 
 @export_group("Zoom")
 @export var base_zoom: float = 1.15
-
-@export_group("Mouse Look-Ahead")
-@export var dead_zone_ratio: float = 0.38
-@export var max_look_offset: Vector2 = Vector2(140.0, 72.0)
-@export var resistance_power: float = 2.4
-@export var look_smooth_speed: float = 7.0
-@export var require_window_focus: bool = true
 
 @export_group("Movement Look-Ahead")
 @export var movement_look_strength: Vector2 = Vector2(28.0, 24.0)
@@ -22,6 +15,8 @@ extends Camera2D
 @export_group("Landing Dip")
 @export var landing_dip_strength: float = 4.0
 @export var landing_dip_recovery: float = 16.0
+
+@export var look_smooth_speed: float = 7.0
 
 var _current_offset: Vector2 = Vector2.ZERO
 var _landing_dip: float = 0.0
@@ -38,9 +33,7 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	var mouse_offset := _calculate_mouse_look_offset()
-	var movement_offset := _calculate_movement_look_offset(delta)
-	var target_offset := mouse_offset + movement_offset
+	var target_offset := _calculate_movement_look_offset(delta)
 
 	_landing_dip = move_toward(_landing_dip, 0.0, landing_dip_recovery * delta)
 	_current_offset = _current_offset.lerp(target_offset, look_smooth_speed * delta)
@@ -64,54 +57,6 @@ func clear_level_bounds() -> void:
 	limit_top = -10000000
 	limit_right = 10000000
 	limit_bottom = 10000000
-
-
-func _has_window_focus() -> bool:
-	var viewport := get_viewport()
-	if viewport == null:
-		return true
-	var window := viewport.get_window()
-	if window == null:
-		return true
-	return window.has_focus()
-
-
-func _calculate_mouse_look_offset() -> Vector2:
-	if require_window_focus and not _has_window_focus():
-		return Vector2.ZERO
-
-	var viewport := get_viewport()
-	if viewport == null:
-		return Vector2.ZERO
-
-	var viewport_size := viewport.get_visible_rect().size
-	if viewport_size.x <= 0.0 or viewport_size.y <= 0.0:
-		return Vector2.ZERO
-
-	var mouse_pos := viewport.get_mouse_position()
-	var center := viewport_size * 0.5
-	var half_size := viewport_size * 0.5
-
-	var normalized := Vector2(
-		(mouse_pos.x - center.x) / half_size.x,
-		(mouse_pos.y - center.y) / half_size.y
-	)
-	normalized.x = clampf(normalized.x, -1.0, 1.0)
-	normalized.y = clampf(normalized.y, -1.0, 1.0)
-
-	return Vector2(
-		_apply_edge_resistance(normalized.x) * max_look_offset.x,
-		_apply_edge_resistance(normalized.y) * max_look_offset.y
-	)
-
-
-func _apply_edge_resistance(axis: float) -> float:
-	var magnitude := absf(axis)
-	if magnitude <= dead_zone_ratio:
-		return 0.0
-	var t := (magnitude - dead_zone_ratio) / (1.0 - dead_zone_ratio)
-	t = pow(t, resistance_power)
-	return signf(axis) * t
 
 
 func _calculate_movement_look_offset(delta: float) -> Vector2:
