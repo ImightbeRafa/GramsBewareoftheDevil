@@ -148,8 +148,11 @@ func _map_meta() -> Dictionary:
 	var h_px := float(_map_h() * TILE)
 	# Blue-dot start: stand on the left-wall protrusion (layout col 1, row 6).
 	var spawn := _surface(1.5, 6.0)
+	# Inside hook shaft, on the left ledge — quick jump for hook testing.
+	var hook_teleport := _surface(float(HOOK_ORIGIN_COL) + 1.5, float(HOOK_ORIGIN_ROW) + 9.0)
 	return {
 		"spawn": spawn,
+		"hook_teleport": hook_teleport,
 		"camera_bounds": Rect2(-TILE * 2, -TILE * 2, w_px + TILE * 4, h_px + TILE * 4),
 	}
 
