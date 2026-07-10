@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/platforms/hook_point.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/placeholders/kenney/tiles_packed.png" id="2_tiles"]
+
+[node name="HookPoint" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_tiles")
+region_enabled = true
+region_rect = Rect2(162, 90, 18, 18)
+scale = Vector2(1.2, 1.2)
+
+[node name="Ring" type="Polygon2D" parent="."]
+color = Color(0.95, 0.82, 0.2, 0.35)
+polygon = PackedVector2Array(-12, 0, 0, -12, 12, 0, 0, 12)

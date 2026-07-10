@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="AbilityUnlocks" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/player/ability_unlocks.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+double_jump = false
+air_dash = false
+wall_slide = true
+wall_jump = true
+wall_climb = false
+cane_pogo = true
+cane_hook = true
+cane_smash = true
+glide = true
+momentum = true
+cane_brace = true

@@ -1,0 +1,119 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="1_player"]
+[ext_resource type="Script" path="res://scripts/hazards/hazard_zone.gd" id="2_hazard"]
+[ext_resource type="Script" path="res://scripts/levels/level_controller.gd" id="3_controller"]
+[ext_resource type="Script" path="res://scripts/levels/parkour_level_bootstrap.gd" id="4_bootstrap"]
+[ext_resource type="Script" path="res://scripts/ui/parkour_hud.gd" id="5_hud"]
+[ext_resource type="PackedScene" path="res://scenes/environment/parallax_sky.tscn" id="6_parallax"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kill"]
+size = Vector2(4000, 120)
+
+[node name="ParkourTest" type="Node2D"]
+script = ExtResource("4_bootstrap")
+
+[node name="ParallaxSky" parent="." instance=ExtResource("6_parallax")]
+band_width = 3400.0
+band_height = 1800.0
+
+[node name="Background" type="ColorRect" parent="."]
+visible = false
+offset_left = -64.0
+offset_top = -64.0
+offset_right = 3304.0
+offset_bottom = 1680.0
+color = Color(0.38, 0.62, 0.88, 1)
+
+[node name="WorldTiles" type="TileMapLayer" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Objects" type="Node2D" parent="."]
+
+[node name="LevelController" type="Node" parent="."]
+script = ExtResource("3_controller")
+
+[node name="KillPlane" type="Area2D" parent="."]
+position = Vector2(1620, 1740)
+collision_layer = 4
+collision_mask = 2
+script = ExtResource("2_hazard")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="KillPlane"]
+shape = SubResource("RectangleShape2D_kill")
+
+[node name="SpawnPoint" type="Marker2D" parent="." groups=["spawn_point"]]
+position = Vector2(72, 1280)
+
+[node name="Player" parent="." instance=ExtResource("1_player")]
+position = Vector2(72, 1280)
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="HintLabel" type="Label" parent="UI"]
+unique_name_in_owner = true
+offset_left = 24.0
+offset_top = 16.0
+offset_right = 900.0
+offset_bottom = 48.0
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.12, 0.18, 0.28, 1)
+text = "Parkour Test — Hold jump while falling=glide · Shift=dash · Q=cane mode · O=Shifting Map · P/L switch levels"
+
+[node name="LevelCompletePanel" type="PanelContainer" parent="UI"]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -220.0
+offset_top = -80.0
+offset_right = 220.0
+offset_bottom = 80.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/LevelCompletePanel"]
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 24
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/LevelCompletePanel/MarginContainer"]
+theme_override_constants/separation = 16
+
+[node name="CompleteLabel" type="Label" parent="UI/LevelCompletePanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Parkour Complete!"
+horizontal_alignment = 1
+
+[node name="RestartButton" type="Button" parent="UI/LevelCompletePanel/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Restart Level"
+
+[node name="ParkourHUD" type="CanvasLayer" parent="."]
+script = ExtResource("5_hud")
+
+[node name="MarginContainer" type="MarginContainer" parent="ParkourHUD"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -120.0
+offset_right = 500.0
+offset_bottom = -16.0
+grow_vertical = 0
+
+[node name="VBox" type="VBoxContainer" parent="ParkourHUD/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="StatusLabel" type="Label" parent="ParkourHUD/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Checkpoint —"

@@ -3,6 +3,7 @@
 /android/
 
 # Node (godot-mcp local install for Cursor)
+# Godot ignores gitignore — node_modules/.gdignore tells the editor not to scan this folder.
 node_modules/
 
 # Exported playtest builds
@@ -11,4 +12,5 @@ builds/*
 *.exe
 
 # Local reference clone (Kenney tutorial demo) — assets live in assets/placeholders/kenney/
+# Godot ignores gitignore — _tmp_pixel_platformer/.gdignore excludes it from the editor scan.
 _tmp_pixel_platformer/

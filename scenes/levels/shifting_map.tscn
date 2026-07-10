@@ -1,0 +1,148 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="1_player"]
+[ext_resource type="Script" path="res://scripts/hazards/hazard_zone.gd" id="2_hazard"]
+[ext_resource type="Script" path="res://scripts/levels/level_controller.gd" id="3_controller"]
+[ext_resource type="Script" path="res://scripts/levels/shifting_map_bootstrap.gd" id="4_bootstrap"]
+[ext_resource type="Script" path="res://scripts/ui/parkour_hud.gd" id="5_hud"]
+[ext_resource type="PackedScene" path="res://scenes/environment/parallax_sky.tscn" id="6_parallax"]
+[ext_resource type="Script" path="res://scripts/levels/shifting_map_controller.gd" id="7_controller"]
+[ext_resource type="Script" path="res://scripts/ui/cane_mode_hud.gd" id="8_cane_hud"]
+[ext_resource type="Script" path="res://scripts/ui/shifting_map_hints.gd" id="9_hints"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kill"]
+size = Vector2(5200, 120)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cane_chip"]
+bg_color = Color(0.06, 0.08, 0.12, 0.82)
+content_margin_left = 10.0
+content_margin_top = 4.0
+content_margin_right = 10.0
+content_margin_bottom = 4.0
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[node name="ShiftingMap" type="Node2D"]
+script = ExtResource("4_bootstrap")
+
+[node name="ParallaxSky" parent="." instance=ExtResource("6_parallax")]
+band_width = 5200.0
+band_height = 2800.0
+
+[node name="SafeTiles" type="TileMapLayer" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="LavaVisual" type="ColorRect" parent="."]
+z_index = -5
+offset_left = -48.0
+offset_top = 2400.0
+offset_right = 5104.0
+offset_bottom = 2520.0
+color = Color(0.92, 0.28, 0.12, 0.85)
+
+[node name="ShiftingRoot" type="Node2D" parent="."]
+
+[node name="Objects" type="Node2D" parent="."]
+
+[node name="ShiftingMapController" type="Node" parent="."]
+script = ExtResource("7_controller")
+shift_interval = 8.0
+warning_duration = 1.0
+shift_duration = 1.0
+freeze_cooldown = 3.0
+
+[node name="LevelController" type="Node" parent="."]
+script = ExtResource("3_controller")
+
+[node name="KillPlane" type="Area2D" parent="."]
+position = Vector2(2528, 2520)
+collision_layer = 4
+collision_mask = 2
+script = ExtResource("2_hazard")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="KillPlane"]
+shape = SubResource("RectangleShape2D_kill")
+
+[node name="SpawnPoint" type="Marker2D" parent="." groups=["spawn_point"]]
+position = Vector2(261, 2286)
+
+[node name="Player" parent="." instance=ExtResource("1_player")]
+position = Vector2(261, 2286)
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="CaneModeHUD" type="PanelContainer" parent="UI"]
+offset_left = 12.0
+offset_top = 10.0
+offset_right = 240.0
+offset_bottom = 36.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_cane_chip")
+script = ExtResource("8_cane_hud")
+
+[node name="LevelCompletePanel" type="PanelContainer" parent="UI"]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -220.0
+offset_top = -80.0
+offset_right = 220.0
+offset_bottom = 80.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/LevelCompletePanel"]
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 24
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/LevelCompletePanel/MarginContainer"]
+theme_override_constants/separation = 16
+
+[node name="CompleteLabel" type="Label" parent="UI/LevelCompletePanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Shifting Map Complete!"
+horizontal_alignment = 1
+
+[node name="RestartButton" type="Button" parent="UI/LevelCompletePanel/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Restart Level"
+
+[node name="ParkourHUD" type="CanvasLayer" parent="."]
+script = ExtResource("5_hud")
+
+[node name="MarginContainer" type="MarginContainer" parent="ParkourHUD"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = -72.0
+offset_right = 560.0
+offset_bottom = -8.0
+grow_vertical = 0
+
+[node name="VBox" type="VBoxContainer" parent="ParkourHUD/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="StatusLabel" type="Label" parent="ParkourHUD/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Layout —"
+
+[node name="ShiftLabel" type="Label" parent="ParkourHUD/MarginContainer/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Shift timer —"
+
+[node name="ShiftingMapHints" type="CanvasLayer" parent="."]
+script = ExtResource("9_hints")

@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/hazards/toxic_zone.gd" id="1_script"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_toxic"]
+size = Vector2(54, 36)
+
+[node name="ToxicZone" type="Area2D"]
+collision_layer = 4
+collision_mask = 2
+monitorable = false
+script = ExtResource("1_script")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -18)
+shape = SubResource("RectangleShape2D_toxic")
+
+[node name="Mist" type="ColorRect" parent="."]
+visible = false
+offset_left = -27.0
+offset_top = -36.0
+offset_right = 27.0
+color = Color(0.35, 0.85, 0.35, 0.4)

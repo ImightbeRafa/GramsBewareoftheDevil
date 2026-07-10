@@ -5,6 +5,7 @@
   "scripts": {
     "mcp": "node ./node_modules/@satelliteoflove/godot-mcp/dist/cli.js",
     "setup": "npm install",
+    "postinstall": "node scripts/ensure_godot_scan_excludes.mjs",
     "mcp:install-addon": "npx -y @satelliteoflove/godot-mcp --install-addon ."
   },
   "keywords": [],

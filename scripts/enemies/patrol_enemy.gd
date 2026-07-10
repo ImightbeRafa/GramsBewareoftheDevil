@@ -12,9 +12,18 @@ var _direction: float = 1.0
 
 
 func _ready() -> void:
+	add_to_group("pogo_target")
 	_origin_x = position.x
 	_area.body_entered.connect(_on_body_entered)
 	_sprite.play("walk")
+
+
+func on_pogo_hit() -> void:
+	queue_free()
+
+
+func on_smash_hit() -> void:
+	queue_free()
 
 
 func _physics_process(delta: float) -> void:
@@ -26,6 +35,8 @@ func _physics_process(delta: float) -> void:
 
 func _on_body_entered(body: Node2D) -> void:
 	if body is Player:
+		if body.is_pogo_iframe_active():
+			return
 		var controller: Node = get_tree().get_first_node_in_group("level_controller")
 		if controller != null and controller.has_method("is_playing") and not controller.is_playing():
 			return

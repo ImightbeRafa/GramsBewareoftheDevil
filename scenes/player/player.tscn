@@ -1,15 +1,35 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=15 format=3]
 
 [ext_resource type="Script" path="res://scripts/player/player.gd" id="1_player"]
 [ext_resource type="SpriteFrames" path="res://assets/sprite_frames/player_frames.tres" id="2_frames"]
+[ext_resource type="Script" path="res://scripts/player/game_camera.gd" id="3_camera"]
+[ext_resource type="Script" path="res://scripts/player/abilities/wall_ability.gd" id="4_wall"]
+[ext_resource type="Script" path="res://scripts/player/abilities/dash_ability.gd" id="5_dash"]
+[ext_resource type="Script" path="res://scripts/player/abilities/glide_ability.gd" id="6_glide"]
+[ext_resource type="Script" path="res://scripts/player/abilities/momentum_ability.gd" id="7_momentum"]
+[ext_resource type="Script" path="res://scripts/player/abilities/cane_controller.gd" id="8_cane_ctrl"]
+[ext_resource type="Script" path="res://scripts/player/abilities/cane_pogo.gd" id="9_cane_pogo"]
+[ext_resource type="Script" path="res://scripts/player/abilities/cane_hook.gd" id="10_cane_hook"]
+[ext_resource type="Script" path="res://scripts/player/abilities/cane_smash.gd" id="11_cane_smash"]
+[ext_resource type="Script" path="res://scripts/player/abilities/cane_visual.gd" id="12_cane_visual"]
+[ext_resource type="Script" path="res://scripts/player/abilities/cane_brace.gd" id="13_cane_brace"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
 size = Vector2(20, 28)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_cane_tip"]
+radius = 6.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_smash"]
+size = Vector2(28, 20)
 
 [node name="Player" type="CharacterBody2D" groups=["player"]]
 collision_layer = 2
 collision_mask = 1
 floor_stop_on_slope = true
+floor_max_angle = 0.785398
+wall_min_slide_angle = 0.0
+safe_margin = 0.08
 script = ExtResource("1_player")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -17,13 +37,59 @@ position = Vector2(0, -14)
 shape = SubResource("RectangleShape2D_body")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-position = Vector2(0, -12)
+position = Vector2(0, -24)
 sprite_frames = ExtResource("2_frames")
 animation = &"idle"
 autoplay = "idle"
 
 [node name="Camera2D" type="Camera2D" parent="."]
-limit_top = 0
-limit_bottom = 720
-position_smoothing_enabled = true
-position_smoothing_speed = 10.0
+script = ExtResource("3_camera")
+
+[node name="WallAbility" type="Node" parent="."]
+script = ExtResource("4_wall")
+
+[node name="DashAbility" type="Node" parent="."]
+script = ExtResource("5_dash")
+
+[node name="GlideAbility" type="Node" parent="."]
+script = ExtResource("6_glide")
+
+[node name="MomentumAbility" type="Node" parent="."]
+script = ExtResource("7_momentum")
+
+[node name="CaneController" type="Node" parent="."]
+script = ExtResource("8_cane_ctrl")
+
+[node name="CanePogo" type="Node" parent="."]
+script = ExtResource("9_cane_pogo")
+
+[node name="CaneHook" type="Node" parent="."]
+script = ExtResource("10_cane_hook")
+
+[node name="CaneSmash" type="Node" parent="."]
+script = ExtResource("11_cane_smash")
+
+[node name="CaneVisual" type="Node2D" parent="."]
+script = ExtResource("12_cane_visual")
+
+[node name="CaneBrace" type="Node" parent="."]
+script = ExtResource("13_cane_brace")
+
+[node name="CaneTip" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 29
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CaneTip"]
+shape = SubResource("CircleShape2D_cane_tip")
+
+[node name="SmashHitbox" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 29
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SmashHitbox"]
+position = Vector2(14, -10)
+shape = SubResource("RectangleShape2D_smash")

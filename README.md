@@ -19,13 +19,15 @@ Then read docs/AGENTS.md, docs/GAME_DESIGN.md, and docs/GITHUB_WORKFLOW.md.
 Do NOT clone or use _tmp_pixel_platformer — it is gitignored; art is already in assets/placeholders/kenney/.
 ```
 
-## Current scope (Session 1 prototype)
+## Current scope (Phase 1 — mobility prototypes)
 
-- Move, jump, double jump, navigate test level with platforms, hazards, and a goal
-- Movement feel tuned for iteration (coyote time, jump buffer, variable jump height)
-- Foundation scenes and folder structure for future systems
+**Roadmap:** See [todo.md](todo.md) for Phases 1–5 (mobility → map systems → assets/lore → full game → polish).
 
-**Not in scope yet:** combat, items, story, menus, special levels, TileMap levels.
+- **Phase 1 (now):** Tune movement until hook, wall, jump, pogo, dash, glide feel great on prototype maps
+- Prototype scenes: `parkour_test` (main), `shifting_map` (layout-shift mechanic test)
+- Full ability kit on test maps: dash, wall slide/climb/jump, glide, cane pogo/hook/smash, brace
+
+**Not in scope yet:** final art, lore, full game progression (Phases 3–4).
 
 ## Requirements
 
@@ -44,15 +46,22 @@ npm install
 
 1. Open `project.godot` in Godot 4.7 → enable **Godot MCP** plugin if needed
 2. Open this folder in Cursor → reload window → confirm MCP green
-3. Press **F5** in Godot — main scene: `scenes/levels/level_01.tscn`
+3. Press **F5** in Godot — main scene: `scenes/levels/parkour_test.tscn`
 
 ### Controls
 
 | Action | Keys |
 |--------|------|
-| Move left | A / Left Arrow |
-| Move right | D / Right Arrow |
-| Jump | Space / W / Up Arrow (double jump in air) |
+| Move left / right | A/D or Arrow keys |
+| Move up (wall climb) | W / Up Arrow |
+| Jump | Space / W / Up Arrow |
+| Dash | Shift |
+| Glide | Hold Jump in air (when unlocked) |
+| Cane mode cycle | Q |
+| Use cane (pogo / hook / smash) | Left mouse / J |
+| Brace (slow fall) | C |
+| Freeze shifting layout | Hold E (shifting map) |
+| Scene switch (debug) | **P** parkour · **O** shifting map · **L** level 01 |
 
 ## Documentation
 

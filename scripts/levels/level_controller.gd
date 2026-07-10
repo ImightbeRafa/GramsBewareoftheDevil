@@ -4,16 +4,42 @@ extends Node
 enum State { PLAYING, COMPLETED }
 
 var _state: State = State.PLAYING
-
-@onready var _complete_panel: Control = %LevelCompletePanel
-@onready var _restart_button: Button = %RestartButton
-@onready var _hint_label: Label = %HintLabel
+var _complete_panel: Control
+var _restart_button: Button
+var _hint_label: Label
 
 
 func _ready() -> void:
 	add_to_group("level_controller")
-	_restart_button.pressed.connect(_on_restart_pressed)
-	_complete_panel.visible = false
+	_resolve_ui_nodes()
+	if _restart_button != null:
+		_restart_button.pressed.connect(_on_restart_pressed)
+	if _complete_panel != null:
+		_complete_panel.visible = false
+	set_process_unhandled_input(true)
+
+
+func _resolve_ui_nodes() -> void:
+	var scene_root := get_tree().current_scene
+	if scene_root == null:
+		return
+	_hint_label = scene_root.get_node_or_null("UI/HintLabel") as Label
+	_complete_panel = scene_root.get_node_or_null("UI/LevelCompletePanel") as Control
+	_restart_button = scene_root.get_node_or_null(
+		"UI/LevelCompletePanel/MarginContainer/VBoxContainer/RestartButton"
+	) as Button
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if not (event is InputEventKey and event.pressed and not event.echo):
+		return
+	match event.keycode:
+		KEY_P:
+			SceneRouter.go_to_parkour()
+		KEY_L:
+			SceneRouter.go_to_level_01()
+		KEY_O:
+			SceneRouter.go_to_shifting()
 
 
 func is_playing() -> bool:
@@ -35,8 +61,10 @@ func on_goal_reached(player: Player) -> void:
 		return
 	_state = State.COMPLETED
 	player.freeze()
-	_hint_label.visible = false
-	_complete_panel.visible = true
+	if _hint_label != null:
+		_hint_label.visible = false
+	if _complete_panel != null:
+		_complete_panel.visible = true
 
 
 func restart_level() -> void:
