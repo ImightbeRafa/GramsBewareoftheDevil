@@ -40,6 +40,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			SceneRouter.go_to_level_01()
 		KEY_O:
 			SceneRouter.go_to_shifting()
+		KEY_M:
+			SceneRouter.go_to_movement_test()
 
 
 func is_playing() -> bool:

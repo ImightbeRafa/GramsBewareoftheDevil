@@ -3,6 +3,7 @@ extends Node
 const PATH_PARKOUR: String = "res://scenes/levels/parkour_test.tscn"
 const PATH_LEVEL_01: String = "res://scenes/levels/level_01.tscn"
 const PATH_SHIFTING: String = "res://scenes/levels/shifting_map.tscn"
+const PATH_MOVEMENT_TEST: String = "res://scenes/levels/movement_test.tscn"
 
 var _changing: bool = false
 
@@ -17,6 +18,10 @@ func go_to_level_01() -> void:
 
 func go_to_shifting() -> void:
 	_change_scene(PATH_SHIFTING)
+
+
+func go_to_movement_test() -> void:
+	_change_scene(PATH_MOVEMENT_TEST)
 
 
 func get_current_scene_path() -> String:

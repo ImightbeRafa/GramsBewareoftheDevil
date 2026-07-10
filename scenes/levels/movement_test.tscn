@@ -3,27 +3,27 @@
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://scripts/hazards/hazard_zone.gd" id="2_hazard"]
 [ext_resource type="Script" path="res://scripts/levels/level_controller.gd" id="3_controller"]
-[ext_resource type="Script" path="res://scripts/levels/parkour_level_bootstrap.gd" id="4_bootstrap"]
+[ext_resource type="Script" path="res://scripts/levels/movement_test_bootstrap.gd" id="4_bootstrap"]
 [ext_resource type="Script" path="res://scripts/ui/parkour_hud.gd" id="5_hud"]
 [ext_resource type="PackedScene" path="res://scenes/environment/parallax_sky.tscn" id="6_parallax"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kill"]
-size = Vector2(4000, 120)
+size = Vector2(1400, 120)
 
-[node name="ParkourTest" type="Node2D"]
+[node name="MovementTest" type="Node2D"]
 script = ExtResource("4_bootstrap")
 
 [node name="ParallaxSky" parent="." instance=ExtResource("6_parallax")]
-band_width = 3400.0
-band_height = 1800.0
+band_width = 1400.0
+band_height = 800.0
 
 [node name="Background" type="ColorRect" parent="."]
 visible = false
-offset_left = -64.0
-offset_top = -64.0
-offset_right = 3304.0
-offset_bottom = 1680.0
-color = Color(0.38, 0.62, 0.88, 1)
+offset_left = -36.0
+offset_top = -36.0
+offset_right = 1200.0
+offset_bottom = 600.0
+color = Color(0.12, 0.12, 0.14, 1)
 
 [node name="WorldTiles" type="TileMapLayer" parent="."]
 collision_layer = 1
@@ -35,7 +35,7 @@ collision_mask = 0
 script = ExtResource("3_controller")
 
 [node name="KillPlane" type="Area2D" parent="."]
-position = Vector2(1620, 1740)
+position = Vector2(600, 650)
 collision_layer = 4
 collision_mask = 2
 script = ExtResource("2_hazard")
@@ -44,10 +44,10 @@ script = ExtResource("2_hazard")
 shape = SubResource("RectangleShape2D_kill")
 
 [node name="SpawnPoint" type="Marker2D" parent="." groups=["spawn_point"]]
-position = Vector2(72, 1280)
+position = Vector2(90, 90)
 
 [node name="Player" parent="." instance=ExtResource("1_player")]
-position = Vector2(72, 1280)
+position = Vector2(90, 90)
 
 [node name="UI" type="CanvasLayer" parent="."]
 
@@ -55,11 +55,11 @@ position = Vector2(72, 1280)
 unique_name_in_owner = true
 offset_left = 24.0
 offset_top = 16.0
-offset_right = 900.0
+offset_right = 980.0
 offset_bottom = 48.0
 theme_override_font_sizes/font_size = 16
 theme_override_colors/font_color = Color(0.12, 0.18, 0.28, 1)
-text = "Parkour Test — Hold jump while falling=glide · Shift=dash · Q=cane mode · M=Movement Test · O=Shifting · P/L switch"
+text = "Movement Test — spikes kill · orbs patrol 5s · fall=die · M=this · P/L/O switch"
 
 [node name="LevelCompletePanel" type="PanelContainer" parent="UI"]
 unique_name_in_owner = true
@@ -88,7 +88,7 @@ theme_override_constants/separation = 16
 [node name="CompleteLabel" type="Label" parent="UI/LevelCompletePanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
-text = "Parkour Complete!"
+text = "Movement Test Complete!"
 horizontal_alignment = 1
 
 [node name="RestartButton" type="Button" parent="UI/LevelCompletePanel/MarginContainer/VBoxContainer"]
@@ -116,4 +116,4 @@ theme_override_constants/separation = 4
 [node name="StatusLabel" type="Label" parent="ParkourHUD/MarginContainer/VBox"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
-text = "Checkpoint —"
+text = "Movement Test —"
