@@ -11,12 +11,13 @@ A 2D level-based platformer inspired by classic Sonic, Mario, and Mega Man — b
 ```
 I just cloned GramsBewareoftheDevil. Follow docs/SETUP.md step by step:
 1) Run npm install
-2) Verify assets/placeholders/kenney/ has tiles_packed.png and characters_packed.png (docs/ASSETS.md)
-3) Walk me through Godot 4.7 setup and enabling the MCP plugin
-4) Reload Cursor and verify godot-mcp is green with 21 tools
-5) Run the game via MCP or tell me to press F5
+2) git checkout jky && git pull origin jky
+3) Verify assets/placeholders/kenney/ has tiles_packed.png and characters_packed.png (docs/ASSETS.md)
+4) Walk me through Godot 4.7 setup and enabling the MCP plugin
+5) Reload Cursor and verify godot-mcp is green with 21 tools
+6) Run the game via MCP or tell me to press F5
 Then read docs/AGENTS.md, docs/GAME_DESIGN.md, and docs/GITHUB_WORKFLOW.md.
-Do NOT clone or use _tmp_pixel_platformer — it is gitignored; art is already in assets/placeholders/kenney/.
+I work ONLY on the jky branch — never master. Do NOT clone or use _tmp_pixel_platformer.
 ```
 
 ## Current scope (Phase 1 — mobility prototypes)

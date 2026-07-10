@@ -24,6 +24,8 @@ git clone https://github.com/ImightbeRafa/GramsBewareoftheDevil.git
 cd GramsBewareoftheDevil
 ```
 
+> **JK:** After clone you land on `master`. Switch to your workspace branch: `git checkout jky` (Ryan must have created and pushed `jky` first — see [GITHUB_WORKFLOW.md](GITHUB_WORKFLOW.md)).
+
 > **Daily Git workflow (branches + Pull Requests):** see [GITHUB_WORKFLOW.md](GITHUB_WORKFLOW.md)
 
 ---
@@ -151,26 +153,28 @@ Expected: agent returns project name `GrampsDontDancewiththeDevil`, Godot 4.7, a
 
 ## Step 6 — Daily collaboration workflow (Git + Pull Requests)
 
-**Never push directly to `master`** (unless you are the lead developer merging reviewed work).
+> **Default branch:** `master` (not `main`). **Partner (JK) works on:** `jky`.
 
 Full beginner guide: **[GITHUB_WORKFLOW.md](GITHUB_WORKFLOW.md)**
 
-```powershell
-# Start of every session
-git checkout master
-git pull origin master
+**JK — start of every session:**
 
-# New work — always use a branch
-git checkout -b design/my-change-name
+```powershell
+git checkout jky
+git pull origin jky
+git fetch origin
+git merge origin/master
 
 # ... edit, test F5 ...
 
 git add .
 git commit -m "Describe what changed"
-git push -u origin design/my-change-name
+git push origin jky
 ```
 
-Then open a **Pull Request** on GitHub for Ryan to review and merge.
+Then open a **Pull Request** on GitHub: **base `master`**, **compare `jky`**. Ryan reviews and merges.
+
+**Ryan — works on `master` directly.** See [FOR_LEAD_DEVELOPER.md](FOR_LEAD_DEVELOPER.md).
 
 ---
 
@@ -202,12 +206,13 @@ Give this to your partner the first time they open the project in Cursor:
 ```
 I just cloned GramsBewareoftheDevil. Follow docs/SETUP.md step by step:
 1) Run npm install
-2) Verify assets/placeholders/kenney/ has tiles_packed.png and characters_packed.png (docs/ASSETS.md)
-3) Walk me through Godot 4.7 setup and enabling the MCP plugin
-4) Reload Cursor and verify godot-mcp is green with 21 tools
-5) Run the game via MCP or tell me to press F5
+2) git checkout jky && git pull origin jky
+3) Verify assets/placeholders/kenney/ has tiles_packed.png and characters_packed.png (docs/ASSETS.md)
+4) Walk me through Godot 4.7 setup and enabling the MCP plugin
+5) Reload Cursor and verify godot-mcp is green with 21 tools
+6) Run the game via MCP or tell me to press F5
 Then read docs/AGENTS.md, docs/GAME_DESIGN.md, and docs/GITHUB_WORKFLOW.md.
-Do NOT clone or use _tmp_pixel_platformer — it is gitignored; art is already in assets/placeholders/kenney/.
+I work ONLY on the jky branch — never master. Do NOT clone or use _tmp_pixel_platformer.
 ```
 
 ---

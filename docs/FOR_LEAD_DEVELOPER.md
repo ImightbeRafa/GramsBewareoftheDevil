@@ -1,20 +1,22 @@
 # For Ryan (Lead Developer)
 
-**Share this doc with your brother** — or walk him through it once. It explains how you work together on GitHub.
+**Share [GITHUB_WORKFLOW.md](GITHUB_WORKFLOW.md) with JK** — or walk him through it once. It explains the full `jky` → `master` workflow.
 
 ---
 
-## One-page summary for your brother
+## One-page summary for JK
 
-> “We share one GitHub repo. You never push to `master` directly. You make a **branch**, do your work, test with **F5**, then open a **Pull Request**. I review it, playtest it, and merge if it's good. Then you `git pull` and start again.”
+> "We share one GitHub repo. Ryan works on `master`. You work **only** on the `jky` branch. You never push to `master`. You test with **F5**, push to `jky`, then open a **Pull Request** (`jky` → `master`). I review, playtest, and merge. Then you sync `jky` with `master` and keep going. **Never delete `jky`.**"
 
 **Repo:** https://github.com/ImightbeRafa/GramsBewareoftheDevil  
+**Default branch:** `master` (not `main`)  
+**Partner branch:** `jky`  
 **Setup:** [SETUP.md](SETUP.md)  
 **Git workflow:** [GITHUB_WORKFLOW.md](GITHUB_WORKFLOW.md)
 
 ---
 
-## Is everything ready for him to clone?
+## Before JK clones (your checklist)
 
 ### ✅ Already in the repo (committed)
 
@@ -24,121 +26,119 @@
 | Godot MCP addon (`addons/godot_mcp/`) | ✅ |
 | Portable MCP config (`.cursor/mcp.json` + `scripts/mcp/`) | ✅ |
 | Node deps (`package.json`, `package-lock.json`) | ✅ |
-| Docs (SETUP, AGENTS, ARCHITECTURE, GAME_DESIGN, GITHUB_WORKFLOW) | ✅ |
+| Docs (SETUP, AGENTS, GITHUB_WORKFLOW, etc.) | ✅ |
 | `.cursorrules` for AI coding standards | ✅ |
 | `.gitignore` (excludes `.godot`, `node_modules`, builds) | ✅ |
 | PR template (`.github/pull_request_template.md`) | ✅ |
 
-### ⚠️ `_tmp_pixel_platformer/` — do not commit
+### ⚠️ You must do (one-time)
 
-That folder is a **local Kenney tutorial clone** with its own `.git`. It is now **gitignored**. Real game art is in `assets/placeholders/kenney/` — that **is** committed and partners get it on clone. See [ASSETS.md](ASSETS.md).
+| # | Task | Steps |
+|---|------|-------|
+| 1 | **Invite JK on GitHub** | Repo → **Settings** → **Collaborators and teams** → **Add people** → enter his GitHub username → role **Write** → he must **Accept** the email invite |
+| 2 | **Create and push `jky` branch** | See commands below |
+| 3 | **Branch protection on `master`** | Settings → Branches → require PR before merge (optional: block force push) |
+| 4 | **Push your latest local work** | Commit & push `master` so JK clones the real current state |
+| 5 | **Confirm JK has Godot 4.7-stable** | Same version as you |
 
-### ⚠️ You should do before he clones (one-time)
+**Create `jky` (run once):**
 
-| Task | Where |
-|------|--------|
-| **Invite brother on GitHub** | Repo → Settings → Collaborators → Add |
-| **Branch protection on `master`** | Settings → Branches → require PR before merge |
-| **Push your latest local work** | You have uncommitted changes — commit & push when ready |
-| **Confirm he has Godot 4.7-stable** | Same version as you |
+```powershell
+git checkout master
+git pull origin master
+git checkout -b jky
+git push -u origin jky
+```
 
-### After he clones
+### After JK clones
 
-He runs: `git clone` → `npm install` → open Godot → open Cursor → follow [SETUP.md](SETUP.md).
+He runs: `git clone` → `git checkout jky` → `npm install` → open Godot → open Cursor → follow [SETUP.md](SETUP.md).
 
-Paste him the **onboarding prompt** from SETUP.md into Cursor.
+Send him the **onboarding prompt** from [SETUP.md](SETUP.md) or [GITHUB_WORKFLOW.md](GITHUB_WORKFLOW.md).
 
 ---
 
-## Your review checklist (when he opens a PR)
+## Your review checklist (when JK opens a PR)
 
 1. **Read the PR** on GitHub — what changed, how to test
-2. **Checkout his branch locally:**
+2. **Checkout `jky` locally:**
+
    ```powershell
    git fetch origin
-   git checkout his-branch-name
+   git checkout jky
+   git pull origin jky
    ```
+
 3. **Godot F5** — play the level, check movement, no errors in Output panel
 4. **Scope** — does it match [GAME_DESIGN.md](GAME_DESIGN.md)? No surprise combat/story if you didn't agree
-5. **Merge or request changes** on GitHub
-6. **`git checkout master && git pull`** after merge
-7. Tell him: _“Merged — pull master and start a new branch”_
+5. **Merge or request changes** on GitHub (prefer **Create a merge commit**)
+6. **`git checkout master && git pull origin master`** after merge
+7. Tell JK: _"Merged — sync jky with master (`git merge origin/master`) and keep going"_
 
 ---
 
-## Recommended GitHub settings (copy-paste for yourself)
+## Recommended GitHub settings
 
 **Branch protection (`master`):**
 
-- Require pull request before merging: **ON**
-- Required approvals: **0 or 1** (you're the only merger — 0 is fine if only you click Merge)
+- Require pull request before merging: **ON** (blocks JK from pushing to `master`)
+- **Allow specified actors to bypass** → add **yourself (Ryan)** if you want to keep pushing directly to `master`
+- Required approvals: **0** (you're the only merger)
 - Allow force pushes: **OFF**
 - Allow deletions: **OFF**
 
-**Why:** Brother can't accidentally become the source of truth on `master`; every change gets a review step.
+**Why:** Branch protection is what actually prevents JK from pushing to `master`. Write access alone does not. Every JK change still goes through PR review before it lands on `master`.
+
+**Collaborator role for JK:** **Write** — can push `jky`, cannot change repo settings.
 
 ---
 
-## How his Cursor agent should behave
+## How JK's Cursor agent should behave
 
-His agent should read [AGENTS.md](AGENTS.md) plus these **extra rules for the creative director**:
+His agent should read [AGENTS.md](AGENTS.md). Key rules:
 
 | Agent rule | Reason |
 |------------|--------|
-| **Never push to `master`** | Only branches |
+| **Work on `jky` only** | Never create `design/*` or other branch names |
+| **Never push to `master`** | Only Ryan touches `master` |
 | **Never merge PRs** | Ryan merges |
-| **Never commit unless he says “commit”** | He controls checkpoints |
-| **Always `git pull` on `master` before new branch** | Fresh start |
+| **Never commit unless JK says "commit"** | JK controls checkpoints |
+| **Sync `master` into `jky` before work** | Fresh start every session |
 | **Test with F5 or Godot MCP before commit/PR** | No broken PRs |
 | **Read GAME_DESIGN.md before new features** | Scope control |
-| **One PR per logical change** | Easier review when updates are fast |
 
-**Prompt he can pin in Cursor:**
+**Prompt JK can pin in Cursor:**
 
 ```
-This is the GramsBewareoftheDevil Godot project. Before any code change:
-1. Read docs/AGENTS.md, docs/GITHUB_WORKFLOW.md, docs/GAME_DESIGN.md
-2. Work only on a branch (design/* or feature/*), never master
-3. Test in Godot (F5 or MCP) before asking me to commit
-4. Never push to master or merge PRs — I open PRs for Ryan to review
-5. Never commit unless I explicitly ask
-```
-
----
-
-## Fast-update workflow (when changes come very fast)
-
-| Brother | Ryan |
-|---------|------|
-| Small change → one branch → one PR | Review same day if possible |
-| Don't stack 10 features in one PR | Ask him to split big PRs |
-| Message when PR is ready | `git fetch` + checkout branch + F5 |
-| After merge: `git pull` on master | Push your own work to master or PR |
-
-**Communication beats Git magic** — a Discord/chat ping _“PR up: design/level-tweaks”_ saves confusion.
-
----
-
-## Your local status (as of last audit)
-
-- Remote: `origin` → https://github.com/ImightbeRafa/GramsBewareoftheDevil.git
-- Branch: `master`
-- **Uncommitted local work exists** (enemies, level changes, etc.) — **push when you're ready** so brother clones the real current state
-
-```powershell
-git add .
-git commit -m "Describe current prototype state"
-git push origin master
+This is GramsBewareoftheDevil. Read docs/AGENTS.md and docs/GITHUB_WORKFLOW.md.
+Work ONLY on the jky branch — never master.
+Before starting: git checkout jky, git pull origin jky, git merge origin/master.
+Test in Godot (F5 or MCP) before I commit.
+Never push to master or merge PRs — I open PRs for Ryan to review.
+Never commit unless I explicitly say "commit".
 ```
 
 ---
 
-## Docs map (what to point him to)
+## Fast-update workflow
+
+| JK | Ryan |
+|----|------|
+| Small change → push `jky` → one PR | Review same day if possible |
+| Don't stack unrelated features in one PR | Ask him to split big PRs |
+| Message when PR is ready | `git fetch` + checkout `jky` + F5 |
+| After merge: sync `jky` with `master` | Push your own work to `master` |
+
+**Communication beats Git magic** — a quick ping _"PR up: jky → master"_ saves confusion.
+
+---
+
+## Docs map (what to point JK to)
 
 | He needs… | Send him… |
 |-----------|-----------|
 | First-time install | [SETUP.md](SETUP.md) |
-| Daily Git / PRs | [GITHUB_WORKFLOW.md](GITHUB_WORKFLOW.md) |
+| Daily Git / PRs (`jky` workflow) | [GITHUB_WORKFLOW.md](GITHUB_WORKFLOW.md) |
 | What the game is / isn't | [GAME_DESIGN.md](GAME_DESIGN.md) |
 | Folder structure | [ARCHITECTURE.md](ARCHITECTURE.md) |
 | Cursor AI rules | [AGENTS.md](AGENTS.md) |
@@ -146,12 +146,13 @@ git push origin master
 
 ---
 
-## Troubleshooting you might see
+## Troubleshooting
 
 | Problem | Fix |
 |---------|-----|
-| Brother pushed to `master` | Turn on branch protection; revert commit if needed |
-| PR won't merge (conflicts) | He merges `master` into his branch, resolves conflicts |
-| “Works on his machine” | You checkout branch — never merge without F5 |
+| JK pushed to `master` | Turn on branch protection; revert commit if needed |
+| PR won't merge (conflicts) | JK merges `master` into `jky`, resolves conflicts, pushes |
+| "Works on his machine" | You checkout `jky` — never merge without F5 |
 | MCP not working for him | [SETUP.md](SETUP.md) troubleshooting — Godot open, `npm install` |
 | Godot version mismatch | Both install 4.7-stable |
+| JK deleted `jky` locally | `git fetch origin && git checkout -b jky origin/jky` |

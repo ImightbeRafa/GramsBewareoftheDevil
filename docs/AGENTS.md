@@ -62,26 +62,42 @@ Full human-readable steps: [SETUP.md](SETUP.md)
 
 ## Git & PR rules (all agents)
 
+> **Default branch:** `master` (not `main`). **Partner branch:** `jky`.
+
 | Rule | Who |
 |------|-----|
-| `git pull origin master` before starting new work | Everyone |
-| Work on a branch (`design/*`, `feature/*`, `fix/*`) | Everyone (required for creative director) |
-| **Never push to `master`** | Creative director's agent |
-| **Never merge Pull Requests** | Creative director's agent — lead developer merges |
+| Sync with latest code before starting work | Everyone |
+| Work on **`jky` only** | JK (creative director) — required |
+| Work on **`master`** (or feature branches if Ryan asks) | Ryan (lead developer) |
+| **Never push to `master`** | JK's agent |
+| **Never merge Pull Requests** | JK's agent — Ryan merges |
+| **Never force-push `jky`** | All agents |
+| **Never delete `jky`** | All agents — it is the partner's permanent branch |
 | **Never `git commit` unless user explicitly asks** | All agents |
 | Test with **F5** or Godot MCP before user commits / opens PR | All agents |
+| PR base: **`master`**, compare: **`jky`** | JK opens PRs |
 | PR description must include **what changed** and **how to test** | Whoever opens the PR |
 | Read scope in GAME_DESIGN.md before adding features | All agents |
 
-**Lead developer (Ryan):** may commit/merge to `master` after reviewing PRs. Still test before merge.
+**JK sync ritual (before every work session):**
 
-**Creative director onboarding prompt:**
+```powershell
+git checkout jky
+git pull origin jky
+git fetch origin
+git merge origin/master
+```
+
+**Lead developer (Ryan):** may commit/merge to `master` after reviewing PRs. Still test before merge. Ryan does not work on `jky` unless reviewing JK's branch.
+
+**JK (creative director) onboarding prompt:**
 
 ```
 This is GramsBewareoftheDevil. Read docs/AGENTS.md, docs/GITHUB_WORKFLOW.md, docs/GAME_DESIGN.md.
-Work only on branches (design/* or feature/*), never master.
+Work ONLY on the jky branch — never master. Do not create design/* or feature/* branches.
+Before starting: git checkout jky, git pull origin jky, git merge origin/master.
 Test in Godot (F5 or MCP) before I commit.
-Never push to master or merge PRs — I open PRs for Ryan to review.
+Never push to master or merge PRs — I open PRs (jky → master) for Ryan to review.
 Never commit unless I explicitly say "commit".
 ```
 
