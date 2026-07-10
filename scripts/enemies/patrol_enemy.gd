@@ -35,7 +35,7 @@ func _physics_process(delta: float) -> void:
 
 func _on_body_entered(body: Node2D) -> void:
 	if body is Player:
-		if body.is_pogo_iframe_active():
+		if body.is_pogo_iframe_active() or body.is_sliding():
 			return
 		var controller: Node = get_tree().get_first_node_in_group("level_controller")
 		if controller != null and controller.has_method("is_playing") and not controller.is_playing():

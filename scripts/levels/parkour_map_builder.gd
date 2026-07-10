@@ -195,8 +195,8 @@ func _build_section_3_wall_shaft() -> void:
 
 func _build_section_4_climb_chimney() -> void:
 	_paint_wall(66, 68, 22, 40)
-	_paint_wall(70, 72, 22, 40)
-	_paint_ground(66, 72, 22)
+	_paint_wall(71, 73, 22, 40)
+	_paint_ground(66, 73, 22)
 	_add_sign("4 · Climb Chimney", 67, 20)
 
 
@@ -233,10 +233,11 @@ func _build_section_8_hook_canyon() -> void:
 	_paint_ground(142, 144, 28)
 	_paint_ground(144, 148, 18)
 	_spawn_hook_point(Vector2(_tx(135), _ty(38)))
-	_spawn_hook_point(Vector2(_tx(139), _ty(34)))
-	_spawn_hook_point(Vector2(_tx(143), _ty(30)))
-	_spawn_hook_point(Vector2(_tx(147), _ty(22)))
-	_add_sign("8 · Hook Canyon", 129, 36)
+	_spawn_hook_point(Vector2(_tx(138), _ty(34)))
+	_spawn_hook_point(Vector2(_tx(142), _ty(28)))
+	_spawn_hook_point(Vector2(_tx(146), _ty(20)))
+	_spawn_hook_point(Vector2(_tx(150), _ty(14)))
+	_add_sign("8 · Hook Canyon — Q=Hook · Click=attach · Release=swing free", 129, 36)
 
 
 func _build_section_9_glide_descent() -> void:
@@ -266,6 +267,18 @@ func _build_sandbox_pocket() -> void:
 	_paint_wall(8, 10, 50, 70)
 	_paint_wall(18, 20, 50, 70)
 	_add_sign("Lab · wall/dash sandbox", 9, 48)
+	_build_crouch_tunnel()
+
+
+func _build_crouch_tunnel() -> void:
+	var floor_row := 80
+	var ceiling_row := 77
+	_paint_ground(22, 36, floor_row)
+	_paint_wall(22, 36, ceiling_row, ceiling_row + 1)
+	_paint_wall(21, 22, ceiling_row, floor_row + 1)
+	_paint_wall(36, 37, ceiling_row, floor_row + 1)
+	_spawn_enemy(Vector2(_tx(28), _ty(floor_row) - 18.0))
+	_add_sign("S = crouch · crouch+Shift = slide under", 23, floor_row - 4)
 
 
 func _spawn_moving_platform(point_a: Vector2, point_b: Vector2, duration: float) -> void:

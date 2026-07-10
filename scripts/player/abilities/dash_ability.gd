@@ -1,8 +1,8 @@
 class_name DashAbility
 extends Node
 
-@export var dash_speed: float = 520.0
-@export var dash_duration: float = 0.12
+@export var dash_speed: float = 700.0
+@export var dash_duration: float = 0.14
 @export var dash_cooldown: float = 0.35
 
 var _player: Player
@@ -35,19 +35,26 @@ func process(delta: float) -> void:
 	if _cooldown_timer > 0.0:
 		_cooldown_timer = maxf(_cooldown_timer - delta, 0.0)
 
-	if _dashing:
-		_dash_timer -= delta
-		_player.velocity = _dash_direction * dash_speed
-		if _dash_timer <= 0.0:
-			_dashing = false
-			_cooldown_timer = dash_cooldown
+	if not Input.is_action_just_pressed("dash"):
+		if _dashing:
+			_dash_timer -= delta
+			_player.velocity = _dash_direction * dash_speed
+			if _dash_timer <= 0.0:
+				_dashing = false
+				_cooldown_timer = dash_cooldown
 		return
+
+	if _player.is_crouching() and _player.is_on_floor():
+		return
+
+	if _player.is_hooking():
+		var hook: CaneHook = _player.get_node("CaneHook") as CaneHook
+		if hook != null:
+			hook.release_for_dash()
 
 	if _player.unlocks == null or not _player.unlocks.air_dash:
 		return
 	if _cooldown_timer > 0.0:
-		return
-	if not Input.is_action_just_pressed("dash"):
 		return
 
 	var can_ground_dash := _player.is_on_floor()

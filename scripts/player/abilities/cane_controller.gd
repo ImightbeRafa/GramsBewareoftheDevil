@@ -25,20 +25,27 @@ func reset_state() -> void:
 
 
 func process(delta: float) -> void:
-	if Input.is_action_just_pressed("cane_mode"):
+	if Input.is_action_just_pressed("cane_mode") and not _player.is_crouching():
 		_cycle_mode()
 
 	if _visual != null:
 		_visual.process_visual(delta)
 
+	if _player.is_crouching() and not _hook.is_hooking():
+		return
+
+	if _hook.is_hooking():
+		_hook.process_attached_input()
+	elif _player.cane_mode == 1 and _player.unlocks != null and _player.unlocks.cane_hook:
+		_hook.process_idle_input()
+
+	if _hook.is_hooking() or (_player.cane_mode == 1 and _player.unlocks != null and _player.unlocks.cane_hook):
+		_hook.process(delta)
+
 	match _player.cane_mode:
 		0:
 			if _player.unlocks != null and _player.unlocks.cane_pogo:
 				_pogo.process(delta)
-		1:
-			if _player.unlocks != null and _player.unlocks.cane_hook:
-				_hook.process_input()
-				_hook.process(delta)
 		2:
 			if _player.unlocks != null and _player.unlocks.cane_smash:
 				_smash.process(delta)

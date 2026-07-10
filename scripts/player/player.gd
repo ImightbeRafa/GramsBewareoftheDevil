@@ -1,18 +1,18 @@
 class_name Player
 extends CharacterBody2D
 
-@export var speed: float = 220.0
-@export var acceleration: float = 1100.0
-@export var friction: float = 1200.0
+@export var speed: float = 330.0
+@export var acceleration: float = 1500.0
+@export var friction: float = 1600.0
 @export var air_acceleration_multiplier: float = 0.7
-@export var jump_velocity: float = -455.0
+@export var jump_velocity: float = -555.0
 @export var gravity_override: float = 1100.0
 @export var fall_gravity_multiplier: float = 1.65
 @export var jump_cut_multiplier: float = 0.42
 @export var coyote_time: float = 0.13
 @export var jump_buffer_time: float = 0.13
 @export var max_air_jumps: int = 1
-@export var max_fall_speed: float = 700.0
+@export var max_fall_speed: float = 850.0
 @export var death_restart_delay: float = 0.55
 @export var unlocks: AbilityUnlocks
 
@@ -45,6 +45,9 @@ var _pogo_iframe_active: bool = false
 @onready var _cane_tip: Area2D = $CaneTip
 @onready var _smash_hitbox: Area2D = $SmashHitbox
 @onready var _cane_brace: CaneBraceAbility = $CaneBrace
+@onready var _crouch_ability: CrouchAbility = $CrouchAbility
+@onready var _body_collision: CollisionShape2D = $CollisionShape2D
+@onready var _crouch_visual: CrouchVisual = $CrouchVisual
 
 var _toxic_active: bool = false
 
@@ -60,6 +63,7 @@ func _ready() -> void:
 	_cane_smash.setup(self, _smash_hitbox, _cane_visual)
 	_cane_controller.setup(self, _cane_pogo, _cane_hook, _cane_smash, _cane_visual)
 	_cane_brace.setup(self)
+	_crouch_ability.setup(self, _body_collision, _sprite, _crouch_visual)
 
 	var spawn_point := get_tree().get_first_node_in_group("spawn_point") as Node2D
 	if spawn_point != null:
@@ -81,6 +85,7 @@ func unfreeze() -> void:
 func die() -> void:
 	if _dying or _frozen:
 		return
+	_crouch_ability.reset_state()
 	_dying = true
 	velocity = Vector2.ZERO
 	_sprite.play("death")
@@ -141,6 +146,18 @@ func is_bracing() -> bool:
 	return _cane_brace.is_bracing()
 
 
+func is_crouching() -> bool:
+	return _crouch_ability.is_crouching()
+
+
+func is_sliding() -> bool:
+	return _crouch_ability.is_sliding()
+
+
+func is_climbing() -> bool:
+	return _wall_ability.is_climbing()
+
+
 func apply_toxic(active: bool) -> void:
 	_toxic_active = active
 	if active:
@@ -157,6 +174,10 @@ func configure_level_camera(left: float, top: float, right: float, bottom: float
 	_camera.set_level_bounds(left, top, right, bottom)
 
 
+func clear_jump_buffer() -> void:
+	_jump_buffer_timer = 0.0
+
+
 func _physics_process(delta: float) -> void:
 	if _dying:
 		velocity = Vector2.ZERO
@@ -170,11 +191,11 @@ func _physics_process(delta: float) -> void:
 
 	_update_timers(delta)
 	_wall_ability.process_timers(delta)
+	_crouch_ability.process(delta)
 	_dash_ability.process(delta)
 	_cane_controller.process(delta)
 
 	if is_hooking():
-		_limit_fall_speed()
 		_update_facing()
 		_update_animation()
 		move_and_slide()
@@ -209,6 +230,7 @@ func _reset_ability_state() -> void:
 	_momentum_ability.reset_state()
 	_cane_controller.reset_state()
 	_cane_brace.reset_state()
+	_crouch_ability.reset_state()
 	cane_mode = 0
 	_pogo_iframe_active = false
 	_toxic_active = false
@@ -240,9 +262,13 @@ func _apply_gravity(delta: float) -> void:
 
 
 func _apply_horizontal_movement(delta: float) -> void:
+	if is_sliding():
+		return
+
 	var input_direction := Input.get_axis("move_left", "move_right")
 	input_direction = _wall_ability.filter_horizontal_input(input_direction)
-	var target_speed := input_direction * speed
+	var move_speed: float = _crouch_ability.get_move_speed() if is_crouching() else speed
+	var target_speed: float = input_direction * move_speed
 	var accel := acceleration if is_on_floor() else acceleration * air_acceleration_multiplier
 	var friction_mult := _momentum_ability.get_friction_multiplier() * _cane_brace.get_friction_multiplier()
 
@@ -261,6 +287,13 @@ func _handle_jump() -> void:
 		if Input.is_action_just_released("jump") and velocity.y < 0.0:
 			velocity.y *= jump_cut_multiplier
 		return
+
+	if is_sliding():
+		_crouch_ability.cancel_slide()
+	if is_crouching():
+		_crouch_ability.try_stand()
+		if is_crouching():
+			return
 
 	if _cane_brace.consume_careful_hop():
 		velocity.y = _cane_brace.get_careful_hop_velocity()
@@ -303,6 +336,8 @@ func _update_facing() -> void:
 
 
 func _update_animation() -> void:
+	if is_crouching() or is_sliding():
+		return
 	if _wall_ability.is_climbing():
 		_sprite.play("jump")
 		return
