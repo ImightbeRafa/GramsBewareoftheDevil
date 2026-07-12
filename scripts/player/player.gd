@@ -46,6 +46,7 @@ var _pogo_iframe_active: bool = false
 @onready var _smash_hitbox: Area2D = $SmashHitbox
 @onready var _cane_brace: CaneBraceAbility = $CaneBrace
 @onready var _crouch_ability: CrouchAbility = $CrouchAbility
+@onready var _ladder_ability: LadderAbility = $LadderAbility
 @onready var _body_collision: CollisionShape2D = $CollisionShape2D
 @onready var _crouch_visual: CrouchVisual = $CrouchVisual
 
@@ -64,6 +65,7 @@ func _ready() -> void:
 	_cane_controller.setup(self, _cane_pogo, _cane_hook, _cane_smash, _cane_visual)
 	_cane_brace.setup(self)
 	_crouch_ability.setup(self, _body_collision, _sprite, _crouch_visual)
+	_ladder_ability.setup(self)
 
 	var spawn_point := get_tree().get_first_node_in_group("spawn_point") as Node2D
 	if spawn_point != null:
@@ -155,7 +157,23 @@ func is_sliding() -> bool:
 
 
 func is_climbing() -> bool:
+	return is_wall_climbing() or is_ladder_climbing()
+
+
+func is_wall_climbing() -> bool:
 	return _wall_ability.is_climbing()
+
+
+func is_ladder_climbing() -> bool:
+	return _ladder_ability.is_climbing()
+
+
+func is_near_ladder() -> bool:
+	return _ladder_ability.is_near_ladder()
+
+
+func wants_ladder_climb() -> bool:
+	return _ladder_ability.wants_climb_intent()
 
 
 func apply_toxic(active: bool) -> void:
@@ -191,7 +209,6 @@ func _physics_process(delta: float) -> void:
 
 	_update_timers(delta)
 	_wall_ability.process_timers(delta)
-	_crouch_ability.process(delta)
 	_dash_ability.process(delta)
 	_cane_controller.process(delta)
 
@@ -200,6 +217,19 @@ func _physics_process(delta: float) -> void:
 		_update_animation()
 		move_and_slide()
 		return
+
+	_ladder_ability.process(delta)
+	if is_ladder_climbing():
+		var saved_floor_snap := floor_snap_length
+		floor_snap_length = 0.0
+		_update_facing()
+		_update_animation()
+		move_and_slide()
+		_ladder_ability.constrain_after_move()
+		floor_snap_length = saved_floor_snap
+		return
+
+	_crouch_ability.process(delta)
 
 	if not is_dashing() and not is_hooking():
 		_wall_ability.process_pre_move(delta)
@@ -231,6 +261,7 @@ func _reset_ability_state() -> void:
 	_cane_controller.reset_state()
 	_cane_brace.reset_state()
 	_crouch_ability.reset_state()
+	_ladder_ability.reset_state()
 	cane_mode = 0
 	_pogo_iframe_active = false
 	_toxic_active = false
@@ -283,6 +314,10 @@ func _apply_horizontal_movement(delta: float) -> void:
 
 
 func _handle_jump() -> void:
+	# Only suppress jump when actively mounting/climbing with vertical intent.
+	if is_near_ladder() and not is_ladder_climbing() and wants_ladder_climb():
+		return
+
 	if _jump_buffer_timer <= 0.0:
 		if Input.is_action_just_released("jump") and velocity.y < 0.0:
 			velocity.y *= jump_cut_multiplier
@@ -337,6 +372,13 @@ func _update_facing() -> void:
 
 func _update_animation() -> void:
 	if is_crouching() or is_sliding():
+		return
+	if is_ladder_climbing():
+		if absf(velocity.y) > 8.0:
+			_sprite.play("run")
+		else:
+			_sprite.play("idle")
+		_sprite.modulate = Color(1.0, 1.0, 1.0)
 		return
 	if _wall_ability.is_climbing():
 		_sprite.play("jump")

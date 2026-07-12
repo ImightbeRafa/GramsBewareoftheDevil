@@ -28,6 +28,10 @@ func process(delta: float) -> void:
 		return
 	if _player.is_on_floor() or _player.is_dashing() or _player.is_hooking():
 		return
+	if _player.is_ladder_climbing():
+		return
+	if _player.is_near_ladder() and _player.wants_ladder_climb():
+		return
 	if _player.is_touching_wall():
 		return
 	if not Input.is_action_pressed("jump"):

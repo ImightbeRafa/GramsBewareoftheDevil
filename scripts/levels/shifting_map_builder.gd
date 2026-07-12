@@ -290,6 +290,15 @@ func _spawn_toxic_pit(pos: Vector2) -> void:
 
 func _spawn_parkour_props() -> void:
 	_spawn_pogo_pad(_surface(22.0, 128.0))
+
+	# Stable ladder tower landings (spawn bay)
+	_paint_ground(16, 25, 112)
+	_paint_ground(16, 25, 96)
+	_spawn_ladder(_surface(20.0, 128.0), 10)
+	_spawn_ladder(_surface(20.0, 112.0), 14)
+	_spawn_ladder(_surface(20.0, 96.0), 12)
+
+	_spawn_ladder(_surface(34.0, 112.0), 10)
 	_spawn_moving_platform(_surface(36.0, 112.0), _surface(40.0, 112.0), 1.7)
 
 	_spawn_hook_point(_surface(50.0, 108.0))
@@ -361,6 +370,10 @@ func _spawn_hook_point(pos: Vector2) -> void:
 	var hook: Node2D = HOOK_POINT_SCENE.instantiate()
 	hook.position = pos
 	_objects.add_child(hook)
+
+
+func _spawn_ladder(pos: Vector2, height_tiles: int) -> void:
+	LadderFactory.spawn(_objects, pos, height_tiles)
 
 
 func _spawn_pogo_pad(pos: Vector2) -> void:

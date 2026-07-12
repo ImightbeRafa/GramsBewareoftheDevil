@@ -96,6 +96,8 @@ func process_pre_move(delta: float) -> void:
 		return
 	if _player.is_dashing() or _is_climbing:
 		return
+	if _player.is_near_ladder() and _player.wants_ladder_climb():
+		return
 
 	var wall_normal_x := get_wall_normal_x()
 	if is_zero_approx(wall_normal_x):
@@ -117,6 +119,8 @@ func process_climb(delta: float) -> void:
 	if not is_on_wall_for_ability() or _player.is_on_floor():
 		return
 	if _player.is_dashing():
+		return
+	if _player.is_near_ladder() and _player.wants_ladder_climb():
 		return
 
 	if Input.is_action_pressed("move_up"):

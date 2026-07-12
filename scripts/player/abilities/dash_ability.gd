@@ -62,6 +62,11 @@ func process(delta: float) -> void:
 	if not can_ground_dash and not can_air_dash:
 		return
 
+	if _player.is_ladder_climbing():
+		var ladder: LadderAbility = _player.get_node("LadderAbility") as LadderAbility
+		if ladder != null:
+			ladder.cancel_for_dash()
+
 	var input := Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	if input.length_squared() > 0.01:
 		_dash_direction = input.normalized()

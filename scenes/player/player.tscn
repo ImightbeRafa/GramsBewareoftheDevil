@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3]
+[gd_scene load_steps=18 format=3]
 
 [ext_resource type="Script" path="res://scripts/player/player.gd" id="1_player"]
 [ext_resource type="SpriteFrames" path="res://assets/sprite_frames/player_frames.tres" id="2_frames"]
@@ -15,6 +15,7 @@
 [ext_resource type="Script" path="res://scripts/player/abilities/cane_brace.gd" id="13_cane_brace"]
 [ext_resource type="Script" path="res://scripts/player/abilities/crouch_ability.gd" id="14_crouch"]
 [ext_resource type="Script" path="res://scripts/player/crouch_visual.gd" id="15_crouch_visual"]
+[ext_resource type="Script" path="res://scripts/player/abilities/ladder_ability.gd" id="16_ladder"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
 size = Vector2(30, 42)
@@ -84,6 +85,9 @@ script = ExtResource("13_cane_brace")
 
 [node name="CrouchAbility" type="Node" parent="."]
 script = ExtResource("14_crouch")
+
+[node name="LadderAbility" type="Node" parent="."]
+script = ExtResource("16_ladder")
 
 [node name="CaneTip" type="Area2D" parent="."]
 collision_layer = 0

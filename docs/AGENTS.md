@@ -88,15 +88,18 @@ git fetch origin
 git merge origin/master
 ```
 
+After merging `master`, if levels need ladders read **[docs/LADDERS.md](LADDERS.md)** and spawn only via `LadderFactory.spawn` / `scenes/platforms/ladder.tscn`.
+
 **Lead developer (Ryan):** may commit/merge to `master` after reviewing PRs. Still test before merge. Ryan does not work on `jky` unless reviewing JK's branch.
 
 **JK (creative director) onboarding prompt:**
 
 ```
-This is GramsBewareoftheDevil. Read docs/AGENTS.md, docs/GITHUB_WORKFLOW.md, docs/GAME_DESIGN.md.
+This is GramsBewareoftheDevil. Read docs/AGENTS.md, docs/GITHUB_WORKFLOW.md, docs/GAME_DESIGN.md, docs/LADDERS.md.
 Work ONLY on the jky branch — never master. Do not create design/* or feature/* branches.
-Before starting: git checkout jky, git pull origin jky, git merge origin/master.
-Test in Godot (F5 or MCP) before I commit.
+Before starting: git checkout jky, git pull origin jky, git fetch origin, git merge origin/master.
+Ladders: ONLY use LadderFactory.spawn(parent, base_pos, height_tiles) or instance scenes/platforms/ladder.tscn.
+Test in Godot (F5 or MCP) before I commit. Parkour section L and shifting spawn bay have reference ladders.
 Never push to master or merge PRs — I open PRs (jky → master) for Ryan to review.
 Never commit unless I explicitly say "commit".
 ```
@@ -154,7 +157,9 @@ Never commit unless I explicitly say "commit".
 | `docs/SETUP.md` | Full onboarding for new machines |
 | `docs/GITHUB_WORKFLOW.md` | Branches, PRs, review process |
 | `docs/ASSETS.md` | Kenney placeholders, what is gitignored |
-| `docs/FOR_LEAD_DEVELOPER.md` | Ryan's guide to explain workflow to brother |
+| `docs/LADDERS.md` | Standard ladder placement + feel rules (all agents) |
+| `scripts/platforms/ladder_factory.gd` | `LadderFactory.spawn` — only way to spawn ladders in code |
+| `scenes/platforms/ladder.tscn` | Ladder prefab |
 | `assets/placeholders/kenney/` | Committed Kenney tiles + characters (partner gets via Git) |
 | `scripts/mcp/start-godot-mcp.cmd` | Portable MCP launcher (Windows) |
 

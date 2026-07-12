@@ -38,6 +38,8 @@ func _build_async(tiles: TileMapLayer, objects: Node2D) -> Dictionary:
 	await _yield_frame()
 	_build_section_0_warmup()
 	await _yield_frame()
+	_build_ladder_section()
+	await _yield_frame()
 	_build_section_1_air_stairs()
 	await _yield_frame()
 	_build_section_2_dash_gap()
@@ -84,6 +86,7 @@ func _build(tiles: TileMapLayer, objects: Node2D) -> Dictionary:
 
 	_paint_bounds()
 	_build_section_0_warmup()
+	_build_ladder_section()
 	_build_section_1_air_stairs()
 	_build_section_2_dash_gap()
 	_build_section_3_wall_shaft()
@@ -170,6 +173,33 @@ func _build_section_0_warmup() -> void:
 	_add_sign("0 · Warmup — coyote & buffer", 2, 76)
 
 
+func _build_ladder_section() -> void:
+	_add_sign("L · LADDER GAUNTLET — ↑↓ climb · Space jump off · bottom ↓ exits", 21, 36)
+
+	# Plaza + multi-level tower (ground → 66 → 52 → 40)
+	_paint_ground(20, 58, 80)
+	_paint_ground(20, 30, 66)
+	_paint_ground(32, 48, 52)
+	_paint_ground(42, 56, 40)
+
+	_spawn_ladder(Vector2(_tx(22), _ty(80)), 16)
+	_spawn_ladder(Vector2(_tx(36), _ty(66)), 14)
+	_spawn_ladder(Vector2(_tx(46), _ty(52)), 12)
+
+	# Long descent / ascent tower on the right
+	_paint_ground(50, 58, 80)
+	_paint_ground(50, 56, 40)
+	_spawn_ladder(Vector2(_tx(53), _ty(80)), 22)
+
+	# Twin ladders — side-by-side comparison
+	_paint_ground(20, 26, 52)
+	_spawn_ladder(Vector2(_tx(21), _ty(66)), 14)
+	_spawn_ladder(Vector2(_tx(24), _ty(66)), 14)
+
+	_add_sign("Twin ladders", 20, 48)
+	_add_sign("Long shaft", 50, 36)
+
+
 func _build_section_1_air_stairs() -> void:
 	var rows := [80, 76, 72, 68]
 	var cols := [26, 31, 36, 41]
@@ -190,14 +220,16 @@ func _build_section_3_wall_shaft() -> void:
 	_paint_wall(58, 60, 40, 68)
 	_paint_wall(64, 66, 40, 68)
 	_paint_ground(58, 66, 40)
-	_add_sign("3 · Wall Shaft", 59, 38)
+	_spawn_ladder(Vector2(_tx(62), _ty(68)), 15)
+	_add_sign("3 · Wall Shaft OR center ladder", 59, 38)
 
 
 func _build_section_4_climb_chimney() -> void:
 	_paint_wall(66, 68, 22, 40)
 	_paint_wall(71, 73, 22, 40)
 	_paint_ground(66, 73, 22)
-	_add_sign("4 · Climb Chimney", 67, 20)
+	_spawn_ladder(Vector2(_tx(69), _ty(40)), 18)
+	_add_sign("4 · Chimney + ladder shortcut", 67, 20)
 
 
 func _build_section_5_moving_shelf() -> void:
@@ -266,7 +298,12 @@ func _build_sandbox_pocket() -> void:
 	_paint_ground(8, 20, 70)
 	_paint_wall(8, 10, 50, 70)
 	_paint_wall(18, 20, 50, 70)
-	_add_sign("Lab · wall/dash sandbox", 9, 48)
+	_paint_ground(10, 18, 58)
+	_paint_ground(10, 18, 46)
+	_spawn_ladder(Vector2(_tx(12), _ty(70)), 14)
+	_spawn_ladder(Vector2(_tx(15), _ty(58)), 12)
+	_spawn_ladder(Vector2(_tx(17), _ty(46)), 10)
+	_add_sign("Lab · 3 ladder heights to test", 9, 42)
 	_build_crouch_tunnel()
 
 
@@ -300,6 +337,10 @@ func _spawn_hook_point(pos: Vector2) -> void:
 	var hook: Node2D = HOOK_POINT_SCENE.instantiate()
 	hook.position = pos
 	_objects.add_child(hook)
+
+
+func _spawn_ladder(pos: Vector2, height_tiles: int) -> void:
+	LadderFactory.spawn(_objects, pos, height_tiles)
 
 
 func _spawn_pogo_pad(pos: Vector2) -> void:

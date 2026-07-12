@@ -119,6 +119,8 @@ func _can_use_crouch() -> bool:
 		return false
 	if _player.is_climbing():
 		return false
+	if _player.is_near_ladder() and _player.wants_ladder_climb():
+		return false
 	return true
 
 
