@@ -1,13 +1,14 @@
 class_name MovementTestBuilder
 extends RefCounted
 
-## Digitized from the reference layout image (32x15), scaled 2x for playable corridors.
+## Main layout (32x15) + hook shaft on the right (20x27). Scaled 2x for playable corridors.
 
 const TILE: int = KenneyPlatformTiles.TILE_SIZE
 const SCALE: int = 2
 const GOAL_SCENE: PackedScene = preload("res://scenes/levels/goal.tscn")
 const SPIKE_SCENE: PackedScene = preload("res://scenes/hazards/spike_hazard.tscn")
 const FIRE_ORB_SCENE: PackedScene = preload("res://scenes/hazards/fire_orb.tscn")
+const HOOK_POINT_SCENE: PackedScene = preload("res://scenes/platforms/hook_point.tscn")
 
 ## '#' = solid, '.' = empty. Top-left opening is the entry shaft.
 const LAYOUT: PackedStringArray = [
@@ -27,6 +28,65 @@ const LAYOUT: PackedStringArray = [
 	"################################",
 	"################################",
 ]
+
+## Tall hook-test shaft (20x27), attached to the right of LAYOUT.
+const HOOK_LAYOUT: PackedStringArray = [
+	"####################",
+	"#..................#",
+	"#..................#",
+	"#..............#####",
+	"#...............####",
+	"#...............####",
+	"#...............####",
+	"#................###",
+	"#..................#",
+	"###................#",
+	"#..................#",
+	"#..................#",
+	"#..................#",
+	"#..................#",
+	"#..................#",
+	"#..................#",
+	"#..................#",
+	"#..................#",
+	"#..................#",
+	"#............#######",
+	"#..................#",
+	"#..................#",
+	"#..................#",
+	"#..................#",
+	"#..................#",
+	"##.................#",
+	"####################",
+]
+
+## Red-dot hook anchors in HOOK_LAYOUT cell coords (col, row).
+const HOOK_POINTS: Array[Vector2] = [
+	Vector2(13, 3),
+	Vector2(9, 3),
+	Vector2(6, 5),
+	Vector2(14, 6),
+	Vector2(3, 7),
+	Vector2(16, 10),
+	Vector2(4, 10),
+	Vector2(8, 11),
+	Vector2(11, 11),
+	Vector2(16, 14),
+	Vector2(12, 14),
+	Vector2(9, 16),
+	Vector2(3, 17),
+	Vector2(6, 19),
+	Vector2(17, 19),
+	Vector2(15, 22),
+	Vector2(8, 22),
+	Vector2(4, 22),
+	Vector2(18, 23),
+]
+
+const HOOK_ORIGIN_COL: int = 32
+const HOOK_ORIGIN_ROW: int = 0
+## Walkway rows punched through the shared wall into the hook shaft.
+const CONNECT_ROWS: Array[int] = [10, 11, 12]
 
 var _tiles: TileMapLayer
 var _objects: Node2D
@@ -52,6 +112,7 @@ func _build_async(tiles: TileMapLayer, objects: Node2D) -> Dictionary:
 	await _yield_frame()
 	_spawn_hazards()
 	_spawn_movers()
+	_spawn_hook_points()
 	_spawn_goal()
 	return _map_meta()
 
@@ -63,6 +124,7 @@ func _build(tiles: TileMapLayer, objects: Node2D) -> Dictionary:
 	_paint_layout()
 	_spawn_hazards()
 	_spawn_movers()
+	_spawn_hook_points()
 	_spawn_goal()
 	return _map_meta()
 
@@ -74,11 +136,11 @@ func _yield_frame() -> void:
 
 
 func _map_w() -> int:
-	return LAYOUT[0].length() * SCALE
+	return (HOOK_ORIGIN_COL + HOOK_LAYOUT[0].length()) * SCALE
 
 
 func _map_h() -> int:
-	return LAYOUT.size() * SCALE
+	return maxi(LAYOUT.size(), HOOK_ORIGIN_ROW + HOOK_LAYOUT.size()) * SCALE
 
 
 func _map_meta() -> Dictionary:
@@ -86,8 +148,11 @@ func _map_meta() -> Dictionary:
 	var h_px := float(_map_h() * TILE)
 	# Blue-dot start: stand on the left-wall protrusion (layout col 1, row 6).
 	var spawn := _surface(1.5, 6.0)
+	# Inside hook shaft, on the left ledge — quick jump for hook testing.
+	var hook_teleport := _surface(float(HOOK_ORIGIN_COL) + 1.5, float(HOOK_ORIGIN_ROW) + 9.0)
 	return {
 		"spawn": spawn,
+		"hook_teleport": hook_teleport,
 		"camera_bounds": Rect2(-TILE * 2, -TILE * 2, w_px + TILE * 4, h_px + TILE * 4),
 	}
 
@@ -105,20 +170,46 @@ func _surface(layout_col: float, layout_row: float) -> Vector2:
 	return Vector2(_tx(layout_col), _ty(layout_row))
 
 
+func _center(layout_col: float, layout_row: float) -> Vector2:
+	## World position at the center of a layout cell (for floating hook points).
+	return Vector2(_tx(layout_col), _ty(layout_row) + float(TILE) * float(SCALE) * 0.5)
+
+
 func _paint_layout() -> void:
 	_solid.clear()
-	for row in range(LAYOUT.size()):
-		var line: String = LAYOUT[row]
-		for col in range(line.length()):
-			if line[col] != "#":
-				continue
-			for sy in range(SCALE):
-				for sx in range(SCALE):
-					_solid[Vector2i(col * SCALE + sx, row * SCALE + sy)] = true
+	_stamp_region(LAYOUT, 0, 0)
+	_stamp_region(HOOK_LAYOUT, HOOK_ORIGIN_COL, HOOK_ORIGIN_ROW)
+	_open_hook_connection()
 
 	for cell: Vector2i in _solid.keys():
 		var atlas := _atlas_for_cell(cell)
 		_tiles.set_cell(cell, 0, atlas)
+
+
+func _stamp_region(region: PackedStringArray, origin_col: int, origin_row: int) -> void:
+	for row in range(region.size()):
+		var line: String = region[row]
+		for col in range(line.length()):
+			if line[col] != "#":
+				continue
+			var lc := origin_col + col
+			var lr := origin_row + row
+			for sy in range(SCALE):
+				for sx in range(SCALE):
+					_solid[Vector2i(lc * SCALE + sx, lr * SCALE + sy)] = true
+
+
+func _open_hook_connection() -> void:
+	## Doorway from the main room into the hook shaft.
+	for row in CONNECT_ROWS:
+		_clear_layout_cell(LAYOUT[0].length() - 1, row)
+		_clear_layout_cell(HOOK_ORIGIN_COL, HOOK_ORIGIN_ROW + row)
+
+
+func _clear_layout_cell(layout_col: int, layout_row: int) -> void:
+	for sy in range(SCALE):
+		for sx in range(SCALE):
+			_solid.erase(Vector2i(layout_col * SCALE + sx, layout_row * SCALE + sy))
 
 
 func _atlas_for_cell(cell: Vector2i) -> Vector2i:
@@ -161,9 +252,7 @@ func _spawn_spike(pos: Vector2) -> void:
 
 func _spawn_movers() -> void:
 	# Black-dot patrols: sit on the floor and travel left ↔ right between the dots.
-	# Upper pair (layout ~col 6.5 ↔ 9.5 on the mid-left ledge floor).
 	_spawn_fire_orb(_floor(6.5, 5.0), _floor(9.5, 5.0), 5.0)
-	# Lower pair (layout ~col 2.5 ↔ 16.5 on the bottom floor).
 	_spawn_fire_orb(_floor(2.5, 13.0), _floor(16.5, 13.0), 5.0)
 
 
@@ -180,6 +269,19 @@ func _spawn_fire_orb(start: Vector2, end: Vector2, duration: float) -> void:
 	orb.wait_at_ends = 0.25
 	orb.position = start
 	_objects.add_child(orb)
+
+
+func _spawn_hook_points() -> void:
+	for point in HOOK_POINTS:
+		var col := float(HOOK_ORIGIN_COL) + point.x
+		var row := float(HOOK_ORIGIN_ROW) + point.y
+		_spawn_hook_point(_center(col, row))
+
+
+func _spawn_hook_point(pos: Vector2) -> void:
+	var hook: Node2D = HOOK_POINT_SCENE.instantiate()
+	hook.position = pos
+	_objects.add_child(hook)
 
 
 func _spawn_goal() -> void:
